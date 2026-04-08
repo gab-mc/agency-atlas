@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance Operations Agency Atlas — Gusto TaxRes</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --green:#2f9e5e; --green-light:#e8f7ef; --green-mid:#5ab883;
+    --orange:#f5a623; --blue:#4a7fc1; --purple:#8b5cf6;
+    --rate-bg:#dbeafe; --rate-text:#1d4ed8;
+    --ein-bg:#ede9fe;  --ein-text:#6d28d9;
+    --dep-bg:#d1fae5;  --dep-text:#065f46;
+    --gray-light:#f3f4f6; --border:#e5e7eb; --text:#111827;
+    --text-muted:#6b7280; --bg:#f9fafb; --white:#ffffff;
+    --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+  header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;gap:16px;}
+  header .logo{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;flex-shrink:0;}
+  header h1{font-size:18px;font-weight:700;}
+  header p{font-size:12px;color:var(--text-muted);margin-top:1px;}
+  header .badge{margin-left:auto;background:var(--green-light);color:var(--green);font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;border:1px solid var(--green-mid);white-space:nowrap;}
+
+  main{max-width:1500px;margin:0 auto;padding:24px 32px;}
+
+  /* KPI rows */
+  .kpi-row{display:grid;grid-template-columns:repeat(1,1fr);gap:16px;margin-bottom:12px;}
+  .kpi-row-2{display:contents;}
+  .kpi-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow);}
+  .kpi-card-sm{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);}
+  .kpi-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+  .kpi-label-sm{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+  .kpi-value{font-size:32px;font-weight:800;line-height:1;}
+  .kpi-value-sm{font-size:24px;font-weight:800;line-height:1;}
+  .kpi-sub{font-size:12px;color:var(--text-muted);margin-top:6px;}
+  .kpi-sub-sm{font-size:11px;color:var(--text-muted);margin-top:4px;}
+  .kpi-bar{margin-top:10px;background:var(--gray-light);border-radius:100px;height:5px;overflow:hidden;}
+  .kpi-bar-fill{height:100%;border-radius:100px;}
+
+  /* Charts */
+  .charts-row{display:flex;justify-content:center;gap:16px;margin-bottom:24px;}
+  .chart-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow);}
+  .chart-card h3{font-size:13px;font-weight:700;margin-bottom:3px;}
+  .chart-card .subtitle{font-size:11px;color:var(--text-muted);margin-bottom:16px;}
+  .chart-wrap canvas{max-height:240px;}
+
+  /* Table */
+  .table-card{background:var(--white);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;}
+  .table-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .table-header h3{font-size:14px;font-weight:700;margin-right:auto;}
+  .filter-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+  .filter-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-right:2px;}
+  .filter-btn{font-size:11px;font-weight:600;padding:4px 11px;border-radius:100px;border:1px solid var(--border);background:var(--white);cursor:pointer;color:var(--text-muted);transition:all .15s;}
+  .filter-btn:hover{border-color:var(--green);color:var(--green);}
+  .filter-btn.active{background:var(--green);color:white;border-color:var(--green);}
+  .filter-btn.active-rate{background:var(--rate-text);color:white;border-color:var(--rate-text);}
+  .filter-btn.active-ein{background:var(--ein-text);color:white;border-color:var(--ein-text);}
+  .filter-btn.active-dep{background:var(--dep-text);color:white;border-color:var(--dep-text);}
+  .filter-btn.active-cx{background:#ef4444;color:white;border-color:#ef4444;}
+  .search-input{padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;width:190px;outline:none;}
+  .search-input:focus{border-color:var(--green);}
+  .filter-divider{width:1px;height:20px;background:var(--border);margin:0 4px;}
+
+  table{width:100%;border-collapse:collapse;}
+  th{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;padding:10px 11px;text-align:left;background:var(--gray-light);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:2;}
+  td{padding:9px 11px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f0fdf4;}
+  tr:hover td:first-child{background:#f0fdf4;}
+  /* Sticky first column */
+  td:first-child{position:sticky;left:0;z-index:1;background:var(--white);box-shadow:2px 0 4px -1px rgba(0,0,0,.06);}
+  th:first-child{position:sticky;left:0;z-index:4;background:var(--gray-light);box-shadow:2px 0 4px -1px rgba(0,0,0,.06);}
+
+  .tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;}
+  .tag-SIT{background:#dbeafe;color:#1e40af;} .tag-SUI{background:#dcfce7;color:#166534;}
+  .tag-PFML{background:#ede9fe;color:#5b21b6;} .tag-MBT{background:#fef3c7;color:#92400e;}
+  .tag-WC,.tag-WorkersComp{background:#fee2e2;color:#991b1b;} .tag-OPT{background:#fce7f3;color:#9d174d;}
+  .tag-Local{background:#fff7ed;color:#c2410c;} .tag-Other{background:#f1f5f9;color:#475569;}
+
+  .dot-ind{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;}
+  .dot-yes{background:var(--green);} .dot-no{background:#e5e7eb;} .dot-other{background:var(--orange);}
+
+  .proc-tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap;}
+  .proc-poa{background:#fee2e2;color:#991b1b;} .proc-customer{background:#dbeafe;color:#1e40af;}
+  .proc-gusto{background:#dcfce7;color:#166534;} .proc-gusto-info{background:#d1fae5;color:#065f46;}
+  .proc-joint{background:#fef3c7;color:#92400e;} .proc-other{background:#f1f5f9;color:#475569;}
+
+  .exlabel{display:inline-block;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap;margin:1px 1px 1px 0;}
+  .exlabel-rate{background:var(--rate-bg);color:var(--rate-text);}
+  .exlabel-ein{background:var(--ein-bg);color:var(--ein-text);}
+  .exlabel-dep{background:var(--dep-bg);color:var(--dep-text);}
+
+  .cx-dots{display:flex;gap:3px;align-items:center;}
+  .cx-dot{width:8px;height:8px;border-radius:50%;background:#e5e7eb;}
+  .cx-dot.on{background:var(--blue);}
+  .cx-dot.hi{background:#ef4444;}
+
+  th.sortable{cursor:pointer;user-select:none;}
+  th.sortable:hover{color:var(--green);}
+  th.sort-asc::after{content:' ▲';font-size:8px;opacity:.7;}
+  th.sort-desc::after{content:' ▼';font-size:8px;opacity:.7;}
+  .sys-code{font-size:10px;color:var(--text-muted);font-family:monospace;}
+  .collapse-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:11px;font-weight:600;color:var(--text-muted);margin-left:10px;transition:all .15s;white-space:nowrap;}
+  .collapse-btn:hover{border-color:var(--green);color:var(--green);}
+  .row-count{font-size:12px;color:var(--text-muted);padding:12px 16px;background:var(--gray-light);border-top:1px solid var(--border);}
+
+  .section-divider{margin:40px 0 24px;border:none;border-top:2px solid var(--border);}
+  .section-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.01em;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+  .section-title-text{padding-bottom:12px;border-bottom:3px solid var(--green);}
+  .section-collapse-btn{font-size:12px;font-weight:600;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;margin-bottom:10px;}
+  .section-collapse-btn:hover{border-color:var(--green);color:var(--green);}
+  .auth-yes{color:#16a34a;font-weight:800;font-size:15px;}
+  .auth-no{color:#e5e7eb;font-size:12px;}
+  td.auth-cell{text-align:center;padding:9px 6px;}
+  th.auth-th{text-align:center;}
+
+  /* ─── DARK MODE ─── */
+  body.dark {
+    --bg: #0f172a; --white: #1e293b; --gray-light: #162032;
+    --border: #2d3f55; --text: #e2e8f0; --text-muted: #94a3b8;
+    --green-light: #0a2218; --green-mid: #1a3d2a;
+    --shadow: 0 1px 3px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3);
+  }
+  body.dark tr:hover td,
+  body.dark tr:hover td:first-child { background: #172a20; }
+  body.dark .auth-no { color: #334155; }
+  body.dark .search-input { background: var(--white); color: var(--text); color-scheme: dark; }
+  body.dark .kpi-bar { background: #2d3f55; }
+  body.dark .cx-dot { background: #334155; }
+  body.dark .dot-no { background: #334155; }
+  body.dark .section-divider { border-top-color: var(--border); }
+  /* Lighten tag backgrounds slightly in dark mode */
+  body.dark .tag-SIT  { background:#1e3a5f; color:#93c5fd; }
+  body.dark .tag-SUI  { background:#14532d; color:#86efac; }
+  body.dark .tag-PFML { background:#2e1065; color:#c4b5fd; }
+  body.dark .tag-WC, body.dark .tag-WorkersComp { background:#450a0a; color:#fca5a5; }
+  body.dark .tag-OPT  { background:#500724; color:#f9a8d4; }
+  body.dark .tag-Local{ background:#431407; color:#fdba74; }
+  body.dark .tag-MBT  { background:#451a03; color:#fcd34d; }
+  body.dark .tag-Other{ background:#1e293b; color:#94a3b8; }
+  body.dark .proc-poa     { background:#450a0a; color:#fca5a5; }
+  body.dark .proc-customer{ background:#1e3a5f; color:#93c5fd; }
+  body.dark .proc-gusto   { background:#14532d; color:#86efac; }
+  body.dark .proc-gusto-info { background:#064e3b; color:#6ee7b7; }
+  body.dark .proc-joint   { background:#451a03; color:#fcd34d; }
+  body.dark .proc-other   { background:#1e293b; color:#94a3b8; }
+  body.dark .exlabel-rate { background:#1e3a5f; color:#93c5fd; }
+  body.dark .exlabel-ein  { background:#2e1065; color:#c4b5fd; }
+  body.dark .exlabel-dep  { background:#064e3b; color:#6ee7b7; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">G</div>
+  <div>
+    <h1>Compliance Operations Agency Atlas</h1>
+    <p>Created &amp; maintained by Gabriella McIntyre &nbsp;·&nbsp; Questions? Slack <strong>@gab</strong></p>
+  </div>
+  <div class="badge" id="headerBadge">— Agencies · Updated April 2026</div>
+  <button id="darkToggle" onclick="toggleDark()" title="Toggle dark mode" style="font-size:16px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;line-height:1;transition:all .15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🌙</button>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+    <button id="syncBtn" onclick="syncFromSheet()" title="Pull latest data from Google Sheet" style="font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;color:var(--text-muted);white-space:nowrap;transition:all .15s;" onmouseover="if(!this.disabled){this.style.borderColor='var(--green)';this.style.color='var(--green)'}" onmouseout="if(!this.disabled){this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'}">🔄 Sync from Sheet</button>
+    <span id="lastSynced" style="font-size:10px;color:#9ca3af;white-space:nowrap;">Hardcoded · April 2026</span>
+  </div>
+</header>
+
+<main>
+  <div style="background:#fefce8;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:10px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px;">
+    <span style="font-size:18px;flex-shrink:0;margin-top:1px;">🚧</span>
+    <div>
+      <p style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:4px;">This dashboard is a work in progress and is currently under peer review.</p>
+      <p style="font-size:12px;color:#a16207;line-height:1.6;">Data will be iterated on and improved over time — some fields may be incomplete or subject to change. If you spot anything incorrect or out of date, your feedback is appreciated! Use the <a href="#anchor-corrections" style="color:#92400e;font-weight:700;text-decoration:underline;text-underline-offset:2px;">Correction Request form</a> at the bottom of the page to flag anything that needs a second look.</p>
+    </div>
+  </div>
+
+  <div id="totalAgenciesKpi" class="kpi-card" style="margin-bottom:16px;display:none;"></div>
+
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 20px;box-shadow:var(--shadow);margin-bottom:28px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-right:8px;">Jump to:</span>
+    <a href="#anchor-exchanges" style="font-size:13px;font-weight:600;color:var(--green);text-decoration:none;background:var(--green-light);border:1px solid var(--green-mid);padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='var(--green)';this.style.color='white'" onmouseout="this.style.background='var(--green-light)';this.style.color='var(--green)'">Agency Data Exchanges</a>
+    <span style="color:var(--border);font-size:16px;">›</span>
+    <a href="#anchor-auth" style="font-size:13px;font-weight:600;color:var(--blue);text-decoration:none;background:#dbeafe;border:1px solid #93c5fd;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='var(--blue)';this.style.color='white'" onmouseout="this.style.background='#dbeafe';this.style.color='var(--blue)'">Agency Authorization Requirements</a>
+    <span style="color:var(--border);font-size:16px;">›</span>
+    <a href="#anchor-poa" style="font-size:13px;font-weight:600;color:#7c3aed;text-decoration:none;background:#ede9fe;border:1px solid #c4b5fd;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#7c3aed';this.style.color='white'" onmouseout="this.style.background='#ede9fe';this.style.color='#7c3aed'">Agency POA Requirements</a>
+    <span style="color:var(--border);font-size:16px;">›</span>
+    <a href="#anchor-sources" style="font-size:13px;font-weight:600;color:#0369a1;text-decoration:none;background:#e0f2fe;border:1px solid #7dd3fc;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#0369a1';this.style.color='white'" onmouseout="this.style.background='#e0f2fe';this.style.color='#0369a1'">Sources &amp; References</a>
+    <span style="color:var(--border);font-size:16px;">›</span>
+    <a href="#anchor-corrections" style="font-size:13px;font-weight:600;color:#b45309;text-decoration:none;background:#fef3c7;border:1px solid #fde68a;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#b45309';this.style.color='white'" onmouseout="this.style.background='#fef3c7';this.style.color='#b45309'">Submit a Correction</a>
+  </div>
+
+  <div id="anchor-exchanges" class="section-title">
+    <span class="section-title-text">Agency Data Exchanges</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionExchanges')">▲ Collapse</button>
+  </div>
+  <div id="sectionExchanges">
+  <div id="kpiRow" style="margin-bottom:12px;"></div>
+  <div style="display:flex;gap:16px;align-items:start;margin-bottom:24px;">
+    <div class="chart-card" style="flex:0 0 480px;">
+      <h3>Exchange Transfer Method</h3>
+      <div class="subtitle">Data exchange delivery types</div>
+      <div class="chart-wrap"><canvas id="exchangeMethodChart"></canvas></div>
+    </div>
+    <div id="kpiRow2" style="flex:1;display:flex;flex-direction:column;gap:12px;"></div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3>All Agencies <button class="collapse-btn" onclick="toggleTable(this,'agencyTableWrap')">▲ Collapse</button></h3>
+      <div class="filter-row">
+        <span class="filter-label">Type:</span>
+        <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
+        <button class="filter-btn" onclick="setFilter(this,'SIT')">SIT</button>
+        <button class="filter-btn" onclick="setFilter(this,'SUI')">SUI</button>
+        <button class="filter-btn" onclick="setFilter(this,'PFML')">PFML</button>
+        <button class="filter-btn" onclick="setFilter(this,'WC')">Workers' Comp</button>
+        <button class="filter-btn" onclick="setFilter(this,'Local')">Local</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">Exchange:</span>
+        <button class="filter-btn" onclick="setFilter(this,'hasExchange')">Has Exchange</button>
+        <button class="filter-btn" onclick="setFilter(this,'rate')" id="fb-rate">Rate</button>
+        <button class="filter-btn" onclick="setFilter(this,'ein')"  id="fb-ein">EIN</button>
+        <button class="filter-btn" onclick="setFilter(this,'dep')"  id="fb-dep">Deposit Sched.</button>
+        <div class="filter-divider"></div>
+        <button class="filter-btn" onclick="setFilter(this,'highCx')" id="fb-cx">High Complexity (≥4)</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">Cadence:</span>
+        <button class="filter-btn" onclick="setFilter(this,'cadence-Quarterly')">Quarterly</button>
+        <button class="filter-btn" onclick="setFilter(this,'cadence-Annual')">Annual</button>
+        <button class="filter-btn" onclick="setFilter(this,'cadence-Monthly')">Monthly</button>
+      </div>
+      <input class="search-input" type="text" placeholder="Search agencies…" oninput="searchTable(this.value)"/>
+    </div>
+    <div id="agencyTableWrap" style="overflow:auto;max-height:520px">
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable" onclick="toggleSort('agency','name',this)">Common Name</th>
+            <th style="display:none">Sys Code</th>
+            <th class="sortable" onclick="toggleSort('agency','agency',this)">Agency / Description</th>
+            <th class="sortable" onclick="toggleSort('agency','taxType',this)">Tax Type</th>
+            <th class="sortable" onclick="toggleSort('agency','portal',this)">Portal</th>
+            <th class="sortable" onclick="toggleSort('agency','exchange',this)">Exchange</th>
+            <th class="sortable" onclick="toggleSort('agency','cadence',this)">Cadence</th>
+            <th class="sortable" onclick="toggleSort('agency','method',this)">Exchange Method</th>
+            <th>Exchange Types</th>
+            <th class="sortable" onclick="toggleSort('agency','complexity',this)">Complexity</th>
+            <th class="sortable" onclick="toggleSort('agency','avg2025',this)">Avg. Days (2025)</th>
+            <th class="sortable" onclick="toggleSort('agency','avg2026',this)">Avg. Days (2026)</th>
+          </tr>
+        </thead>
+        <tbody id="agencyTableBody"></tbody>
+      </table>
+      <div class="row-count" id="rowCount"></div>
+    </div>
+  </div>
+  </div><!-- end sectionExchanges -->
+
+  <hr class="section-divider">
+  <div id="anchor-auth" class="section-title">
+    <span class="section-title-text">Agency Authorization Requirements</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionAuth')">▲ Collapse</button>
+  </div>
+  <div id="sectionAuth">
+  <div style="display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start;margin-bottom:16px;">
+    <div id="authProcessKpi" class="kpi-card"></div>
+    <div class="chart-card">
+      <h3>Authorization Process</h3>
+      <div class="subtitle">How Gusto gains agency access</div>
+      <div class="chart-wrap"><canvas id="authProcessChart"></canvas></div>
+    </div>
+  </div>
+  <div id="authBreakdownKpi" class="kpi-card" style="margin-bottom:16px;"></div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3>Authorization by Action Type <button class="collapse-btn" onclick="toggleTable(this,'authTableWrap')">▲ Collapse</button></h3>
+      <div class="filter-row">
+        <span class="filter-label">Type</span>
+        <button class="filter-btn active" onclick="setAuthFilter(this,'all')" id="afb-all">All</button>
+        <button class="filter-btn" onclick="setAuthFilter(this,'SIT')" id="afb-sit">SIT</button>
+        <button class="filter-btn" onclick="setAuthFilter(this,'SUI')" id="afb-sui">SUI</button>
+        <button class="filter-btn" onclick="setAuthFilter(this,'PFML')" id="afb-pfml">PFML</button>
+        <button class="filter-btn" onclick="setAuthFilter(this,'Workers\' Comp')" id="afb-wc">Workers' Comp</button>
+        <button class="filter-btn" onclick="setAuthFilter(this,'Local')" id="afb-local">Local</button>
+        <button class="filter-btn" onclick="setAuthFilter(this,'MBT')" id="afb-mbt">MBT</button>
+      </div>
+      <input class="search-input" type="text" placeholder="Search agencies…" oninput="searchAuthTable(this.value)"/>
+    </div>
+    <div id="authTableWrap" style="overflow:auto;max-height:520px">
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable" onclick="toggleSort('auth','name',this)">Common Name</th>
+            <th class="sortable" onclick="toggleSort('auth','agency',this)">Agency</th>
+            <th class="sortable" onclick="toggleSort('auth','taxType',this)">Tax Type</th>
+            <th class="sortable" onclick="toggleSort('auth','authProcess',this)">Auth Process</th>
+            <th class="auth-th sortable" onclick="toggleSort('auth','pay',this)">Pay</th>
+            <th class="auth-th sortable" onclick="toggleSort('auth','file',this)">File</th>
+            <th class="auth-th sortable" onclick="toggleSort('auth','phone',this)">Phone / Agency</th>
+            <th class="auth-th sortable" onclick="toggleSort('auth','portal',this)">Portal / Bot</th>
+            <th class="auth-th sortable" onclick="toggleSort('auth','amend',this)">Amendments</th>
+            <th class="auth-th sortable" onclick="toggleSort('auth','exchange',this)">Data Exchange</th>
+          </tr>
+        </thead>
+        <tbody id="authTableBody"></tbody>
+      </table>
+      <div class="row-count" id="authRowCount"></div>
+    </div>
+  </div>
+
+  </div><!-- end sectionAuth -->
+
+  <hr class="section-divider">
+  <div id="anchor-poa" class="section-title">
+    <span class="section-title-text">Agency POA Requirements</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionPOA')">▲ Collapse</button>
+  </div>
+  <div id="sectionPOA">
+  <div style="display:inline-flex;align-items:center;gap:8px;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 16px;margin-bottom:20px;">
+    <span style="font-size:14px;">🚧</span>
+    <span style="font-size:13px;color:#92400e;font-weight:600;">This section is a work in progress.</span>
+  </div>
+  <div class="table-card">
+    <div class="table-header">
+      <h3>POA Requirements <button class="collapse-btn" onclick="toggleTable(this,'poaTableWrap')">▲ Collapse</button></h3>
+      <input class="search-input" placeholder="Search agencies…" oninput="searchPoaTable(this.value)">
+    </div>
+    <div id="poaTableWrap" style="overflow:auto;max-height:520px">
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable" onclick="toggleSort('poa','name',this)">Common Name</th>
+            <th class="sortable" onclick="toggleSort('poa','desc',this)">Agency / Description</th>
+            <th class="sortable" onclick="toggleSort('poa','sig',this)">Signature</th>
+            <th class="sortable" onclick="toggleSort('poa','trans',this)">Transmission</th>
+            <th class="auth-th sortable" onclick="toggleSort('poa','notary',this)">Notary</th>
+            <th class="auth-th sortable" onclick="toggleSort('poa','mou',this)">MOU</th>
+            <th class="auth-th sortable" onclick="toggleSort('poa','accepts8655',this)">Accepts 8655</th>
+            <th class="auth-th sortable" onclick="toggleSort('poa','inapp',this)">In-App</th>
+            <th class="auth-th sortable" onclick="toggleSort('poa','pf',this)">P&amp;F</th>
+            <th class="auth-th sortable" onclick="toggleSort('poa','agencyCall',this)" title="Agency Call required">Agency Call</th>
+            <th class="sortable" onclick="toggleSort('poa','use',this)">Gusto's Use</th>
+            <th class="sortable" onclick="toggleSort('poa','form',this)">Form Name</th>
+          </tr>
+        </thead>
+        <tbody id="poaTableBody"></tbody>
+      </table>
+      <div class="row-count" id="poaRowCount"></div>
+    </div>
+  </div>
+  </div><!-- end sectionPOA -->
+
+  <hr class="section-divider">
+  <div id="anchor-sources" class="section-title">
+    <span class="section-title-text">Sources &amp; References</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionSources')">▲ Collapse</button>
+  </div>
+  <div id="sectionSources">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sources used in building and maintaining this dashboard. Click any link to open, or add new entries below.</p>
+      <div id="sourcesList" style="display:flex;flex-direction:column;gap:10px;">
+        <!-- sources rendered here by JS -->
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input id="newSourceTitle" type="text" placeholder="Source name…" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;width:240px;outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        <input id="newSourceUrl" type="text" placeholder="URL (optional)…" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;width:300px;outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        <input id="newSourceNote" type="text" placeholder="Note (optional)…" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;width:220px;outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        <button onclick="addSource()" style="padding:7px 16px;background:var(--green);color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">+ Add</button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+  <div id="anchor-corrections" class="section-title">
+    <span class="section-title-text">Submit a Correction</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionCorrections')">▲ Collapse</button>
+  </div>
+  <div id="sectionCorrections">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;">
+        Spotted something incorrect or out of date? Fill out the form below and click <strong style="color:var(--text)">Submit Correction Request</strong> — it will open a pre-filled Google Form in a new tab for you to review and send. Your request will also appear in the log below until the page is refreshed.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <!-- Row 1 -->
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Agency <span style="color:#ef4444">*</span></label>
+          <select id="crAgency" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;cursor:pointer;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'">
+            <option value="">— Select agency —</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Table / Section <span style="color:#ef4444">*</span></label>
+          <select id="crSection" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;cursor:pointer;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'">
+            <option value="">— Select section —</option>
+            <option>Agency Data Exchanges</option>
+            <option>Agency Authorization Requirements</option>
+            <option>Agency POA Requirements</option>
+            <option>Other / General</option>
+          </select>
+        </div>
+        <!-- Row 2 -->
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Field / Column <span style="color:#ef4444">*</span></label>
+          <input id="crField" type="text" placeholder="e.g. Signature, Transmission, Notary…" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Your Name (optional)</label>
+          <input id="crName" type="text" placeholder="e.g. Alex T." style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+        <!-- Row 3 -->
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Current Value (what it says now)</label>
+          <input id="crCurrent" type="text" placeholder="e.g. WET SIG" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Suggested Correction <span style="color:#ef4444">*</span></label>
+          <input id="crSuggested" type="text" placeholder="e.g. ESIG" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div style="margin-bottom:18px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Additional Notes / Source (optional)</label>
+        <textarea id="crNotes" placeholder="Any context, links, or documentation that supports this correction…" rows="3" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;resize:vertical;font-family:inherit;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="submitCorrection()" style="padding:9px 22px;background:var(--green);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#237a49'" onmouseout="this.style.background='var(--green)'">📋 Submit Correction Request</button>
+        <button onclick="clearCorrectionForm()" style="padding:9px 16px;background:none;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">Clear</button>
+        <span id="crStatus" style="font-size:12px;color:var(--green);display:none;font-weight:600;"></span>
+      </div>
+    </div>
+
+    <!-- In-page log -->
+    <div id="crLog" style="margin-top:16px;display:none;">
+      <h4 style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em;">Requests submitted this session</h4>
+      <div id="crLogList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ─── AGENCY DATA ──────────────────────────────────────────────────────────────
+// rateExch/einExch/dsExch: from exchange dashboard (colM/P/S having data)
+// complexity: 0–5 from exchange dashboard (null = not in exchange system)
+const agencies = [
+  // ALABAMA
+  {name:"AL SIT", sysCode:"AL - DOR", agency:"Alabama Department of Revenue", desc:"Alabama - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:false, complexity:1},
+  {name:"AL SUI", sysCode:"AL - ADOL", agency:"Alabama Department of Labor", desc:"Alabama - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:1},
+  // ALASKA
+  {name:"AK SUI", sysCode:"AK - DOLWD", agency:"Alaska Dept. of Labor & Workforce Dev.", desc:"Alaska - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // ARIZONA
+  {name:"AZ SIT", sysCode:"AZ - DOR", agency:"Arizona Withholding / Dept. of Revenue", desc:"Arizona - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"AZ SUI", sysCode:"AZ - DES", agency:"Arizona Dept. of Economic Security", desc:"Arizona - Employer Unemployment", taxType:"SUI", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // ARKANSAS
+  {name:"AR SIT", sysCode:"AR - DFA", agency:"Dept. of Finance and Administration", desc:"Arkansas - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"AR SUI", sysCode:"AR - ADWS", agency:"Arkansas Dept. of Workforce Services", desc:"Arkansas - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:0},
+  // CALIFORNIA
+  {name:"CA SIT/SUI", sysCode:"CA - EDD", agency:"CA-EDD", desc:"California - EDD (SIT + SUI)", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:2},
+  // COLORADO
+  {name:"CO SIT", sysCode:"CO - CDOR", agency:"Colorado Department of Revenue", desc:"Colorado - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"CO SUI", sysCode:"CO - CLDE", agency:"Colorado State Treasurer / CO Dept. of Labor", desc:"Colorado - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:3},
+  {name:"CO PFML", sysCode:"CO - CLDE", agency:"CO - Family and Medical Leave Insurance", desc:"Colorado - FAMLI/PFML", taxType:"PFML", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"CO Denver OPT", sysCode:"CO - Denver", agency:"Denver Dept. of Finance", desc:"Denver - Occupational Privilege Tax", taxType:"OPT", portal:"", exchange:"", authProcess:"", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // CONNECTICUT
+  {name:"CT SIT", sysCode:"CT - DRS", agency:"Commissioner of Revenue Services", desc:"Connecticut - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:true, dsExch:true, complexity:3},
+  {name:"CT SUI", sysCode:"CT - DOL", agency:"Administrator, Unemployment Compensation", desc:"Connecticut - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:false, dsExch:false, complexity:3},
+  {name:"CT PFML", sysCode:"", agency:"CT Employee Paid Family and Medical Leave", desc:"Connecticut - PFML", taxType:"PFML", portal:"YES", exchange:"OTHER", authProcess:"Gusto self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // DC
+  {name:"DC SIT", sysCode:"DC - OTR", agency:"D.C. Treasurer / Office of Tax and Revenue", desc:"DC - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Direct download", rateExch:false, einExch:true, dsExch:true, complexity:2},
+  {name:"DC SUI/PFL", sysCode:"DC - DOES", agency:"DCDOES", desc:"DC - Employer Unemployment + PFL", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:1},
+  // DELAWARE
+  {name:"DE SIT", sysCode:"DE - DOR", agency:"Delaware Division of Revenue", desc:"Delaware - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"DE SUI", sysCode:"DE - DOL", agency:"Delaware Department of Labor", desc:"Delaware - Employer Unemployment", taxType:"SUI", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // FLORIDA
+  {name:"FL SUI", sysCode:"FL - DOR", agency:"Florida Department of Revenue", desc:"Florida - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:3},
+  // GEORGIA
+  {name:"GA SIT", sysCode:"GA - DOR", agency:"Georgia Department of Revenue", desc:"Georgia - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:false, dsExch:true, complexity:3},
+  {name:"GA SUI", sysCode:"GA - DOL", agency:"Georgia Department of Labor", desc:"Georgia - Employer Unemployment", taxType:"SUI", portal:"NO", exchange:"YES", authProcess:"POA-only", exchangeMethod:"CD exchange", rateExch:true, einExch:false, dsExch:false, complexity:5},
+  // HAWAII
+  {name:"HI SUI", sysCode:"HI - DLIR", agency:"Hawaii Dept. of Labor & Industrial Relations", desc:"Hawaii - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:false, dsExch:false, complexity:null},
+  {name:"HI SIT", sysCode:"HI - DOTAX", agency:"Hawaii State Tax Collector / Dept. of Taxation", desc:"Hawaii - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // IOWA
+  {name:"IA SIT", sysCode:"IA - IDR", agency:"Iowa Dept. of Revenue", desc:"Iowa - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"IA SUI", sysCode:"IA - IWD", agency:"Iowa Workforce Development", desc:"Iowa - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:2},
+  // IDAHO
+  {name:"ID SIT", sysCode:"ID - ISTC", agency:"Idaho State Tax Commission", desc:"Idaho - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"ID SUI", sysCode:"ID - IDOL", agency:"Idaho Dept. of Labor", desc:"Idaho - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // ILLINOIS
+  {name:"IL SIT", sysCode:"IL - DOR", agency:"Illinois Withholding / Dept. of Revenue", desc:"Illinois - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"IL SUI", sysCode:"IL - IDES", agency:"Illinois Unemployment / IDES", desc:"Illinois - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:3},
+  // INDIANA
+  {name:"IN SIT", sysCode:"IN - DOR", agency:"Indiana Department of Revenue", desc:"Indiana - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"IN SUI", sysCode:"IN - DWD", agency:"Indiana Dept. of Workforce Development", desc:"Indiana - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:4},
+  // KANSAS
+  {name:"KS SIT", sysCode:"KS - KDOR", agency:"Kansas Dept. of Revenue", desc:"Kansas - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Other", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"KS SUI", sysCode:"KS - KDOL", agency:"Kansas Employment Security Fund / KDOL", desc:"Kansas - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:2},
+  // KENTUCKY
+  {name:"KY SIT", sysCode:"KY - DOR", agency:"Kentucky Department of Revenue", desc:"Kentucky - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Other", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:true, complexity:3},
+  {name:"KY SUI", sysCode:"KY - OET", agency:"Kentucky Office of Unemployment Insurance / OET", desc:"Kentucky - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Email exchange", rateExch:true, einExch:false, dsExch:false, complexity:4},
+  {name:"Kenton County", sysCode:"", agency:"Kenton County Occupational Tax", desc:"Kentucky - Local Occupational Tax", taxType:"Local", portal:"", exchange:"YES", authProcess:"", exchangeMethod:"Email exchange", rateExch:false, einExch:false, dsExch:false, complexity:2},
+  {name:"KY Campbell County", sysCode:"", agency:"Campbell County Fiscal Court", desc:"Kentucky - Local Occupational Tax", taxType:"Local", portal:"", exchange:"YES", authProcess:"", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:true, complexity:1},
+  {name:"KY City of Middletown", sysCode:"", agency:"City of Middletown", desc:"Kentucky - Local Occupational Tax", taxType:"Local", portal:"", exchange:"YES", authProcess:"", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:false, complexity:1},
+  // LOUISIANA
+  {name:"LA SIT", sysCode:"LA - LDR", agency:"Louisiana Dept. of Revenue (LDR)", desc:"Louisiana - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Other", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"LA SUI", sysCode:"LA - LWC", agency:"Louisiana Workforce Commission", desc:"Louisiana - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:1},
+  // MAINE
+  {name:"ME SIT", sysCode:"ME - MRS", agency:"Maine Revenue Services", desc:"Maine - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"ME SUI", sysCode:"ME - MDOL", agency:"Maine Department of Labor", desc:"Maine - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"NO", authProcess:"POA-only", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:2},
+  // MARYLAND
+  {name:"MD SIT", sysCode:"", agency:"Comptroller of Maryland", desc:"Maryland - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"MD SUI", sysCode:"MD - DLLR", agency:"Maryland Unemployment Insurance Fund / DLLR", desc:"Maryland - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:1},
+  // MASSACHUSETTS
+  {name:"MA SIT", sysCode:"MA - DOR", agency:"Commonwealth of Massachusetts / DOR", desc:"Massachusetts - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:false, dsExch:true, complexity:3},
+  {name:"MA PFML", sysCode:"", agency:"Commonwealth of Massachusetts (PFML)", desc:"Massachusetts - PFML", taxType:"PFML", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"MA SUI", sysCode:"MA - DUA", agency:"MA Division of Unemployment Assistance", desc:"Massachusetts - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:1},
+  // MICHIGAN
+  {name:"MI SIT", sysCode:"MI - DOT", agency:"State of Michigan / Dept. of Treasury", desc:"Michigan - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"MI SUI", sysCode:"MI - UIA", agency:"Michigan Unemployment Insurance Agency", desc:"Michigan - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:3},
+  // MINNESOTA
+  {name:"MN SIT", sysCode:"MN - DOR", agency:"Minnesota Dept. of Revenue", desc:"Minnesota - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"MN SUI", sysCode:"MN - DEED", agency:"Minnesota Unemployment Insurance / DEED", desc:"Minnesota - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:2},
+  {name:"MN Paid Leave", sysCode:"", agency:"Minnesota Paid Leave Program", desc:"Minnesota - Paid Family and Medical Leave", taxType:"PFML", portal:"", exchange:"NO", authProcess:"", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // MISSISSIPPI
+  {name:"MS SIT", sysCode:"MS - DOR", agency:"Mississippi Department of Revenue", desc:"Mississippi - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"MS SUI", sysCode:"MS - MDES", agency:"Mississippi Dept. of Employment Security", desc:"Mississippi - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:null},
+  // MISSOURI
+  {name:"MO SIT", sysCode:"MO - DOR", agency:"Missouri Department of Revenue", desc:"Missouri - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"MO SUI", sysCode:"MO - DLIR", agency:"MO Dept. of Labor and Industrial Relations", desc:"Missouri - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Email exchange", rateExch:true, einExch:true, dsExch:false, complexity:3},
+  // MONTANA
+  {name:"MT SIT", sysCode:"MT - DOR", agency:"Montana Dept. of Revenue", desc:"Montana - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"OTHER", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"MT SUI", sysCode:"MT - DLI", agency:"Unemployment Insurance Division / MT DLI", desc:"Montana - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:false, dsExch:false, complexity:3},
+  // NEBRASKA
+  {name:"NE SIT", sysCode:"NE - DOR", agency:"Nebraska Dept. of Revenue", desc:"Nebraska - Employee Withholding", taxType:"SIT", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"NE SUI", sysCode:"NE - DOL", agency:"Nebraska Dept. of Labor (U.C. Fund)", desc:"Nebraska - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:false, dsExch:false, complexity:2},
+  // NEVADA
+  {name:"NV SUI", sysCode:"NV - ESD", agency:"Nevada Employment Security Division", desc:"Nevada - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:null},
+  {name:"NV MBT", sysCode:"NV - DETR", agency:"Nevada Dept. of Employment, Training & Rehabilitation", desc:"Nevada - DETR (separate agency)", taxType:"MBT", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:true, dsExch:false, complexity:0},
+  // NEW HAMPSHIRE
+  {name:"NH SUI", sysCode:"NH - ES", agency:"NH Employment Security", desc:"New Hampshire - Employer Unemployment", taxType:"SUI", portal:"NO", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:3},
+  // NEW JERSEY
+  {name:"NJ SUI", sysCode:"NJ - DOL", agency:"NJ Dept. of Labor and Workforce Development", desc:"New Jersey - Employer Unemployment", taxType:"SUI", portal:"", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Email exchange", rateExch:true, einExch:false, dsExch:false, complexity:3},
+  {name:"NJ SIT", sysCode:"NJ - DOR", agency:"NJ Division of Taxation", desc:"New Jersey - Employee Withholding", taxType:"SIT", portal:"", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // NEW MEXICO
+  {name:"NM SIT", sysCode:"NM - TRD", agency:"NM Taxation & Revenue Dept.", desc:"New Mexico - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"OTHER", authProcess:"Gusto self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"NM SUI", sysCode:"NM - DWS", agency:"NM Dept. of Workforce Solutions", desc:"New Mexico - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:3},
+  {name:"NM WC", sysCode:"", agency:"NM Taxation and Revenue (Workers' Comp)", desc:"New Mexico - Workers' Compensation Fee", taxType:"WC", portal:"NO", exchange:"NO", authProcess:"Gusto self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // NEW YORK
+  {name:"NY SIT", sysCode:"", agency:"New York Withholding / Dept. of Tax & Finance", desc:"New York - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"NY SUI", sysCode:"NY - DOL", agency:"New York Unemployment / Dept. of Labor", desc:"New York - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Enrollment", rateExch:false, einExch:true, dsExch:false, complexity:3},
+  // NORTH CAROLINA
+  {name:"NC SIT", sysCode:"NC - DOR", agency:"NC Department of Revenue", desc:"North Carolina - Employee Withholding", taxType:"SIT", portal:"NO", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:false, dsExch:true, complexity:2},
+  {name:"NC SUI", sysCode:"NC - DES", agency:"NC Division of Employment Security", desc:"North Carolina - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:2},
+  // NORTH DAKOTA
+  {name:"ND SIT", sysCode:"ND - OSTC", agency:"ND Office of State Tax Commissioner", desc:"North Dakota - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"ND SUI", sysCode:"ND - JSND", agency:"Job Service North Dakota", desc:"North Dakota - Employer Unemployment", taxType:"SUI", portal:"", exchange:"YES", authProcess:"Other", exchangeMethod:"Email exchange", rateExch:true, einExch:true, dsExch:false, complexity:2},
+  // OHIO
+  {name:"OH SIT", sysCode:"OH - ODT", agency:"Ohio Dept. of Taxation", desc:"Ohio - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:true, complexity:3},
+  {name:"OH SUI", sysCode:"OH - ODJFS", agency:"Ohio Dept. of Job & Family Services", desc:"Ohio - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:2},
+  // OKLAHOMA
+  {name:"OK SIT", sysCode:"OK - OTC", agency:"Oklahoma Tax Commission", desc:"Oklahoma - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"OK SUI", sysCode:"OK - OESC", agency:"Oklahoma Employment Security Commission", desc:"Oklahoma - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Email exchange", rateExch:true, einExch:true, dsExch:false, complexity:1},
+  // OREGON
+  {name:"OR SIT", sysCode:"OR - DOR", agency:"Oregon Department of Revenue", desc:"Oregon - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"OR SUI", sysCode:"OR - OED", agency:"Oregon Employment Department", desc:"Oregon - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:false, dsExch:false, complexity:4},
+  // PENNSYLVANIA
+  {name:"PA SIT", sysCode:"PA - DOR", agency:"Pennsylvania Department of Revenue", desc:"Pennsylvania - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:true, dsExch:true, complexity:3},
+  {name:"PA SUI", sysCode:"PA - L&I", agency:"Pennsylvania UC Fund / Dept. of Labor & Industry", desc:"Pennsylvania - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:null},
+  // RHODE ISLAND
+  {name:"RI SIT", sysCode:"RI - TAX", agency:"Rhode Island Division of Taxation", desc:"Rhode Island - Employee Withholding", taxType:"SIT", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"RI SUI", sysCode:"RI - DLT", agency:"Rhode Island Dept. of Labor and Training", desc:"Rhode Island - Employer Unemployment", taxType:"SUI", portal:"", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Email exchange", rateExch:true, einExch:false, dsExch:false, complexity:3},
+  // SOUTH CAROLINA
+  {name:"SC SIT", sysCode:"SC - DOR", agency:"S.C. Department of Revenue", desc:"South Carolina - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"SC SUI", sysCode:"SC - DEW", agency:"S.C. Dept. of Employment and Workforce", desc:"South Carolina - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:3},
+  // SOUTH DAKOTA
+  {name:"SD SUI", sysCode:"SD - DLR", agency:"SD Dept. of Labor and Regulation", desc:"South Dakota - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Email exchange", rateExch:true, einExch:true, dsExch:false, complexity:5},
+  // TENNESSEE
+  {name:"TN SUI", sysCode:"TN - DLWD", agency:"TN Dept. of Labor & Workforce Development", desc:"Tennessee - Employer Unemployment", taxType:"SUI", portal:"OTHER", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:1},
+  // TEXAS
+  {name:"TX SUI", sysCode:"TX - TWC", agency:"Texas Workforce Commission", desc:"Texas - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:4},
+  // UTAH
+  {name:"UT SIT", sysCode:"UT - STC", agency:"Utah State Tax Commission", desc:"Utah - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"UT SUI", sysCode:"UT - DWS", agency:"Utah Dept. of Workforce Services", desc:"Utah - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Email exchange", rateExch:true, einExch:true, dsExch:false, complexity:3},
+  // VERMONT
+  {name:"VT SIT", sysCode:"VT - DOT", agency:"Vermont Department of Taxes", desc:"Vermont - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"VT SUI", sysCode:"VT - VDOL", agency:"Vermont Dept. of Labor", desc:"Vermont - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:1},
+  // VIRGINIA
+  {name:"VA SIT", sysCode:"VA - TAX", agency:"Virginia Department of Taxation", desc:"Virginia - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:false, dsExch:true, complexity:3},
+  {name:"VA SUI", sysCode:"VA - VEC", agency:"Virginia Employment Commission", desc:"Virginia - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:3},
+  // WASHINGTON
+  {name:"WA LNI/WC", sysCode:"", agency:"Washington Dept. of Labor & Industries", desc:"Washington - Workers' Comp / LNI", taxType:"WC", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:2},
+  {name:"WA SUI", sysCode:"WA - ESD", agency:"WA Employment Security Dept.", desc:"Washington - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:false, dsExch:false, complexity:3},
+  {name:"WA PFML", sysCode:"", agency:"WA Employment Security Dept. (PFML)", desc:"Washington - Family and Medical Leave", taxType:"PFML", portal:"OTHER", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  // WEST VIRGINIA
+  {name:"WV SIT", sysCode:"WV - STD", agency:"West Virginia State Tax Department", desc:"West Virginia - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"WV SUI", sysCode:"WV - WFWV", agency:"WorkForce West Virginia", desc:"West Virginia - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Email exchange", rateExch:true, einExch:true, dsExch:false, complexity:4},
+  // WISCONSIN
+  {name:"WI SIT", sysCode:"WI - DOR", agency:"Wisconsin Department of Revenue", desc:"Wisconsin - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:true, dsExch:false, complexity:2},
+  {name:"WI SUI", sysCode:"WI - DWD", agency:"Wisconsin Dept. of Workforce Development", desc:"Wisconsin - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:2},
+  // WYOMING
+  {name:"WY SUI", sysCode:"WY - DWS", agency:"Wyoming Dept. of Workforce Services", desc:"Wyoming - Employer Unemployment", taxType:"SUI", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"WY WC", sysCode:"", agency:"Wyoming Dept. of Workforce Services (WC)", desc:"Wyoming - Workers' Compensation", taxType:"WC", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+];
+
+document.getElementById("headerBadge").textContent = `${agencies.length} Agencies · Updated April 2026`;
+
+// ─── KPIs ─────────────────────────────────────────────────────────────────────
+const total       = agencies.length;
+const portalYes   = agencies.filter(a=>a.portal==="YES").length;
+const exchYes     = agencies.filter(a=>a.exchange==="YES").length;
+const rateCount   = agencies.filter(a=>a.rateExch).length;
+const einCount    = agencies.filter(a=>a.einExch).length;
+const depCount    = agencies.filter(a=>a.dsExch).length;
+const multiCount  = agencies.filter(a=>[a.rateExch,a.einExch,a.dsExch].filter(Boolean).length>=2).length;
+const highCxCount = agencies.filter(a=>a.complexity!=null&&a.complexity>=4).length;
+const authYes     = agencies.filter(a=>a.authProcess&&a.authProcess!=="").length;
+const authNo      = total - authYes;
+const researchDone= agencies.filter(a=>!["Local","OPT"].includes(a.taxType)).length; // approx
+
+document.getElementById("totalAgenciesKpi").innerHTML=`<div class="kpi-label">Total Agencies</div><div class="kpi-value" style="color:#2f9e5e">${total}</div><div class="kpi-sub">Across 50+ states + DC</div>`;
+
+document.getElementById("kpiRow").innerHTML=`<div class="kpi-card"><div class="kpi-label">Active Exchanges</div><div class="kpi-value" style="color:#f5a623">${exchYes}</div><div class="kpi-sub">${Math.round(exchYes/total*100)}% of agencies</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${Math.min(exchYes/total*100,100)}%;background:#f5a623"></div></div></div>`;
+
+document.getElementById("authProcessKpi").innerHTML=`<div class="kpi-label">Auth Process Set</div><div class="kpi-value" style="color:#4a7fc1">${authYes}</div><div class="kpi-sub">${authNo} agenc${authNo===1?'y':'ies'} require no auth</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${Math.min(authYes/total*100,100)}%;background:#4a7fc1"></div></div>`;
+
+document.getElementById("kpiRow2").innerHTML=[
+  {label:"Rate Exchange",      value:rateCount,  sub:"",   color:getComputedStyle(document.documentElement).getPropertyValue('--rate-text').trim()||"#1d4ed8"},
+  {label:"EIN Exchange",       value:einCount,   sub:"",   color:"#6d28d9"},
+  {label:"Deposit Schedule",   value:depCount,   sub:"",   color:"#065f46"},
+  {label:"Multi-Label (2+)",   value:multiCount, sub:"Rate + EIN or DS", color:"#b45309"},
+  {label:"No Exchange Types", value:exchYes-rateCount-einCount-depCount+multiCount*2<0?0:agencies.filter(a=>a.exchange==="YES"&&!a.rateExch&&!a.einExch&&!a.dsExch).length, sub:"Has exchange, no type data", color:"#9ca3af"},
+].map(k=>`<div class="kpi-card-sm"><div class="kpi-label-sm">${k.label}</div><div class="kpi-value-sm" style="color:${k.color}">${k.value}</div><div class="kpi-sub-sm">${k.sub}</div></div>`).join('');
+
+// ─── CHARTS ───────────────────────────────────────────────────────────────────
+let authProcessChart = null, exchangeMethodChart = null;
+try {
+  const authCounts={};
+  agencies.filter(a=>a.authProcess).forEach(a=>{authCounts[a.authProcess]=(authCounts[a.authProcess]||0)+1;});
+  const authLabels=Object.keys(authCounts).sort((a,b)=>authCounts[b]-authCounts[a]);
+  const authColors={'POA-only':'#ef4444','Customer self-serve':'#4a7fc1','Gusto self-serve':'#2f9e5e','Gusto self-serve+ INFO':'#5ab883','Joint effort':'#f59e0b','Other':'#9ca3af'};
+  authProcessChart = new Chart(document.getElementById("authProcessChart"),{
+    type:'bar',
+    data:{labels:authLabels,datasets:[{data:authLabels.map(l=>authCounts[l]),backgroundColor:authLabels.map(l=>authColors[l]||'#9ca3af'),borderRadius:6,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#f3f4f6'},ticks:{font:{size:11}}},y:{grid:{display:false},ticks:{font:{size:11}}}}}
+  });
+
+  const exMethods={};
+  agencies.filter(a=>a.exchangeMethod).forEach(a=>{exMethods[a.exchangeMethod]=(exMethods[a.exchangeMethod]||0)+1;});
+  exchangeMethodChart = new Chart(document.getElementById("exchangeMethodChart"),{
+    type:'doughnut',
+    data:{labels:Object.keys(exMethods),datasets:[{data:Object.values(exMethods),backgroundColor:['#2f9e5e','#4a7fc1','#f59e0b','#ef4444','#8b5cf6','#ec4899'],borderWidth:2,borderColor:'#ffffff'}]},
+    options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'right',labels:{font:{size:11},padding:12,boxWidth:12}}}}
+  });
+} catch(e) {
+  // Chart.js unavailable (e.g. blocked by network policy) — hide chart containers gracefully
+  console.warn('Charts unavailable:', e.message);
+  document.querySelectorAll('.chart-card').forEach(el => el.style.display = 'none');
+}
+
+// ─── TABLE HELPERS ────────────────────────────────────────────────────────────
+function naCell(){ return `<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>`; }
+
+function exMethodBadge(v){
+  if(!v) return '<span style="color:#d1d5db">—</span>';
+  const map = {
+    'Direct download': {bg:'#dbeafe', color:'#1e40af'},
+    'Pickup-Dropoff':  {bg:'#ede9fe', color:'#5b21b6'},
+    'Email exchange':  {bg:'#d1fae5', color:'#065f46'},
+    'CD exchange':     {bg:'#fef3c7', color:'#92400e'},
+    'Enrollment':      {bg:'#fce7f3', color:'#9d174d'},
+  };
+  const s = map[v] || {bg:'#f3f4f6', color:'#6b7280'};
+  return `<span style="display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;background:${s.bg};color:${s.color}">${v}</span>`;
+}
+
+function dotHtml(val){
+  if(val==="YES") return `<span class="dot-ind dot-yes"></span>Yes`;
+  if(val==="NO"||val==="") return `<span class="dot-ind dot-no"></span>No`;
+  if(val==="OTHER") return `<span class="dot-ind dot-other"></span>Other`;
+  return `<span class="dot-ind dot-no"></span>—`;
+}
+function procHtml(proc){
+  if(!proc) return '—';
+  const map={'POA-only':'proc-poa','Customer self-serve':'proc-customer','Gusto self-serve':'proc-gusto','Gusto self-serve+ INFO':'proc-gusto-info','Joint effort':'proc-joint','Other':'proc-other'};
+  return `<span class="proc-tag ${map[proc]||'proc-other'}">${proc}</span>`;
+}
+function taxTag(t){
+  const cls={SIT:'tag-SIT',SUI:'tag-SUI',PFML:'tag-PFML',MBT:'tag-MBT',WC:'tag-WC',OPT:'tag-OPT',Local:'tag-Local'}[t]||'tag-Other';
+  return `<span class="tag ${cls}">${t||'—'}</span>`;
+}
+function exLabels(a){
+  const has=a.exchange==="YES";
+  if(!has) return '<span style="color:#d1d5db;font-size:10px">—</span>';
+  const badges=[];
+  if(a.rateExch) badges.push(`<span class="exlabel exlabel-rate">Rate</span>`);
+  if(a.einExch)  badges.push(`<span class="exlabel exlabel-ein">EIN</span>`);
+  if(a.dsExch)   badges.push(`<span class="exlabel exlabel-dep">Dep. Sched.</span>`);
+  return badges.length ? badges.join('') : `<span style="color:#9ca3af;font-size:10px">No label</span>`;
+}
+function cxDots(n){
+  if(n===null||n===undefined) return `<span style="color:#d1d5db;font-size:10px">—</span>`;
+  if(n===0) return `<div class="cx-dots">${Array(5).fill(`<div class="cx-dot"></div>`).join('')}</div>`;
+  const max=5;
+  const isHigh=n>=4;
+  return `<div class="cx-dots" title="Complexity ${n}/5">${Array.from({length:max},(_,i)=>`<div class="cx-dot${i<n?(isHigh?' hi':' on'):''}"></div>`).join('')}</div>`;
+}
+
+// ─── TABLE FILTERING ─────────────────────────────────────────────────────────
+let currentFilter='all', currentSearch='';
+
+function setFilter(el,filter){
+  document.querySelectorAll('.filter-btn').forEach(b=>{b.className='filter-btn';});
+  const activeClass = {rate:'active-rate',ein:'active-ein',dep:'active-dep',highCx:'active-cx'}[filter]||'active';
+  el.classList.add(activeClass);
+  currentFilter=filter;
+  renderTable();
+}
+function searchTable(val){currentSearch=val;renderTable();}
+
+function toggleTable(btn, id){
+  const el = document.getElementById(id);
+  const collapsed = el.style.display === 'none';
+  el.style.display = collapsed ? '' : 'none';
+  btn.textContent = collapsed ? '▲ Collapse' : '▼ Expand';
+}
+
+function toggleSection(btn, id){
+  const el = document.getElementById(id);
+  const collapsed = el.style.display === 'none';
+  el.style.display = collapsed ? '' : 'none';
+  btn.textContent = collapsed ? '▲ Collapse' : '▼ Expand';
+}
+
+// ─── AVG DAYS TO COMPLETE 2025 (from Manual Data Exchanges Analysis sheet) ───
+const avgDaysMap = {
+  "AL SIT":2025, "AL SUI":0, "AR SUI":5.5, "CA SIT/SUI":2.25,
+  "CO SUI":8.5, "CT SIT":3, "CT SUI":5.5, "DC SIT":0.44, "DC SUI":1.75, "DC SUI/PFL":0,
+  "FL SUI":2.25, "GA SIT":4.7, "GA SUI":30.5, "HI SUI":43,
+  "IA SUI":5.5, "IL SUI":6, "IN SUI":1.75,
+  "Kenton County":5, "KY Campbell County":1.5,
+  "KS SUI":9.75, "KY SUI":4, "KY SIT":3.4,
+  "LA SUI":0.5, "MA SUI":0.5, "MA SIT":6.2, "MD SUI":0,
+  "ME SUI":12.25, "MI SUI":0.3, "MN SUI":3.75, "MO SUI":5,
+  "MS SUI":8.25, "MT SUI":1, "NC SIT":28, "NC SUI":0.25,
+  "ND SUI":5, "NE SUI":2.75, "NH SUI":13.25, "NJ SUI":8.5,
+  "NM SUI":0.5, "NV MBT":1, "NV SUI":4, "NY SUI":1, "OH SUI":2.5,
+  "OH SIT":7.87, "OK SUI":10.75, "OR SUI":0.5, "PA SIT":"N/A", "PA SUI":12.5,
+  "RI SUI":5.25, "SC SUI":0, "SD SUI":15.75, "TN SUI":4,
+  "TX SUI":7.25, "UT SUI":14, "VA SIT":18.5, "VA SUI":8.25,
+  "VT SUI":1, "WA LNI":0.67, "WA LNI/WC":1, "WA SUI":2.5, "WI SUI":10.25,
+  "WI SIT":14.5, "WV SUI":18.5,
+};
+// Fix AL SIT typo from initializer above
+avgDaysMap["AL SIT"] = 10.75;
+
+// ─── AVG DAYS TO COMPLETE 2026 (from Quarterly_Q1 sheet, kickoff→completion) ──
+const avgDays2026Map = {
+  "AL SUI":0, "AR SUI":1, "CA SIT/SUI":0, "CO SUI":9, "CT SIT":"TBD", "CT SUI":4,
+  "DC SIT":1, "DC SUI/PFL":0, "FL SUI":0, "GA SUI":44, "HI SUI":"TBD", "IL SUI":3, "IN SUI":1,
+  "IA SUI":0, "KS SUI":1, "Kenton County":9, "KY Campbell County":8,
+  "KY SUI":1, "KY City of Middletown":1, "LA SUI":0, "ME SUI":7,
+  "MD SUI":0, // kickoff listed as 2/6/2025 in sheet (likely typo), treating as same-day
+  "MA SUI":1, "MI SUI":1, "MN SUI":0, "MS SUI":2, "MO SUI":5,
+  "MT SUI":2, "NE SUI":1, "NV MBT":1, "NV SUI":0, "NH SUI":18,
+  "NJ SUI":10, "NM SUI":1, "NC SUI":1, "NC SIT":6, "ND SUI":3, "NY SUI":1,
+  "OH SUI":2, "OK SUI":6, "OR SUI":0, "PA SUI":7, "PA SIT":6,
+  "RI SUI":21, "SC SUI":0, "SD SUI":22, "TN SUI":0, "TX SUI":9,
+  "UT SUI":29, "VT SUI":0, "VA SUI":17, "VA SIT":7, "WA LNI/WC":1,
+  "WA SUI":1, "WV SUI":28, "WI SUI":13, "WI SIT":10,
+};
+
+// ─── CADENCE MAP (from Quarterly_Q1 sheet — all present = Quarterly) ─────────
+const cadenceMap = {
+  "HI SUI":"Annual", "CT SIT":"Annual",
+  "AL SIT":"Monthly", "DC SIT":"Monthly", "OH SIT":"Monthly",
+  "GA SIT":"Monthly", "NY SUI":"Monthly", "MA SIT":"Monthly",
+  "WV SUI":["Quarterly","Monthly"], "KY SIT":"Monthly",
+  "AL SUI":"Quarterly", "AR SUI":"Quarterly", "CA SIT/SUI":"Quarterly",
+  "CO SUI":"Quarterly", "CT SUI":"Quarterly", "DC SUI/PFL":"Quarterly",
+  "FL SUI":"Quarterly", "GA SUI":"Quarterly", "IL SUI":"Quarterly",
+  "IN SUI":"Quarterly", "IA SUI":"Quarterly", "KS SUI":"Quarterly",
+  "Kenton County":"Quarterly", "KY Campbell County":"Quarterly",
+  "KY SUI":"Quarterly", "KY City of Middletown":"Quarterly",
+  "LA SUI":"Quarterly", "ME SUI":"Quarterly", "MD SUI":"Quarterly",
+  "MA SUI":"Quarterly", "MI SUI":"Quarterly", "MN SUI":"Quarterly",
+  "MS SUI":"Quarterly", "MO SUI":"Quarterly", "MT SUI":"Quarterly",
+  "NE SUI":"Quarterly", "NV MBT":"Quarterly", "NV SUI":"Quarterly",
+  "NH SUI":"Quarterly", "NJ SUI":"Quarterly", "NM SUI":"Quarterly",
+  "NC SUI":"Quarterly", "NC SIT":["Quarterly","Annual"], "ND SUI":"Quarterly",
+  "OH SUI":"Quarterly", "OK SUI":"Quarterly", "OR SUI":"Quarterly",
+  "PA SUI":"Quarterly", "PA SIT":"Quarterly", "RI SUI":"Quarterly",
+  "SC SUI":"Quarterly", "SD SUI":"Quarterly", "TN SUI":"Quarterly",
+  "TX SUI":"Quarterly", "UT SUI":"Quarterly", "VT SUI":"Quarterly",
+  "VA SUI":"Quarterly", "VA SIT":"Quarterly", "WA LNI/WC":"Quarterly",
+  "WA SUI":"Quarterly", "WI SUI":"Quarterly",
+  "WI SIT":"Quarterly",
+};
+function cadenceHtml(name){
+  const v = cadenceMap[name];
+  if(!v) return `<span style="color:#d1d5db;font-size:10px">—</span>`;
+  const badge = c => {
+    const color = c==='Annual' ? '#92400e' : c==='Monthly' ? '#5b21b6' : c==='Email exchange' ? '#065f46' : '#1e40af';
+    const bg    = c==='Annual' ? '#fef3c7' : c==='Monthly' ? '#ede9fe' : c==='Email exchange' ? '#d1fae5' : '#dbeafe';
+    return `<span style="font-size:10px;font-weight:700;color:${color};background:${bg};padding:2px 7px;border-radius:4px;white-space:nowrap">${c}</span>`;
+  };
+  return Array.isArray(v) ? v.map(badge).join(' ') : badge(v);
+}
+
+function avgDaysHtml(name, use2026=false){
+  const map = use2026 ? avgDays2026Map : avgDaysMap;
+  const v = map[name];
+  if(v===undefined||v===null) return `<span style="color:#d1d5db;font-size:10px">—</span>`;
+  if(v==='TBD') return `<span style="font-size:10px;font-weight:700;color:#6b7280;background:#f3f4f6;padding:2px 7px;border-radius:4px;white-space:nowrap">TBD</span>`;
+  if(v==='N/A') return `<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>`;
+  const color = v<=3 ? '#166534' : v<=10 ? '#92400e' : '#991b1b';
+  const bg    = v<=3 ? '#dcfce7' : v<=10 ? '#fef3c7' : '#fee2e2';
+  return `<span style="font-size:10px;font-weight:700;color:${color};background:${bg};padding:2px 7px;border-radius:4px;white-space:nowrap">${v}d</span>`;
+}
+
+// Additional exchange methods (for agencies with multiple exchange types by cadence)
+const extraExchangeMethodMap = {
+  "NC SIT": "Email exchange",
+  "WV SUI": "Enrollment",
+};
+
+// ─── SORTING ──────────────────────────────────────────────────────────────────
+const sortState = {
+  agency: {col: null, dir: 'asc'},
+  auth:   {col: null, dir: 'asc'},
+  poa:    {col: null, dir: 'asc'},
+};
+function sortBy(data, getter, dir){
+  return [...data].sort((a,b)=>{
+    let av=getter(a), bv=getter(b);
+    if(av===null||av===undefined) av=''; if(bv===null||bv===undefined) bv='';
+    if(typeof av==='boolean') av=av?1:0; if(typeof bv==='boolean') bv=bv?1:0;
+    if(typeof av==='number'&&typeof bv==='number') return dir==='asc'?av-bv:bv-av;
+    return dir==='asc'?String(av).localeCompare(String(bv)):String(bv).localeCompare(String(av));
+  });
+}
+function toggleSort(table, col, th){
+  const s=sortState[table];
+  if(s.col===col) s.dir=s.dir==='asc'?'desc':'asc';
+  else { s.col=col; s.dir='asc'; }
+  th.closest('thead').querySelectorAll('th.sortable').forEach(t=>t.classList.remove('sort-asc','sort-desc'));
+  th.classList.add(s.dir==='asc'?'sort-asc':'sort-desc');
+  if(table==='agency') renderTable();
+  else if(table==='auth') renderAuthTable();
+  else if(table==='poa') renderPoaTable();
+}
+
+function renderTable(){
+  let data=agencies;
+  if(currentFilter==='SIT') data=data.filter(a=>a.taxType==='SIT');
+  else if(currentFilter==='SUI') data=data.filter(a=>a.taxType==='SUI');
+  else if(currentFilter==='PFML') data=data.filter(a=>a.taxType==='PFML');
+  else if(currentFilter==='WC') data=data.filter(a=>a.taxType==='WC'||a.taxType==='OPT');
+  else if(currentFilter==='Local') data=data.filter(a=>a.taxType==='Local');
+  else if(currentFilter==='hasExchange') data=data.filter(a=>a.exchange==='YES');
+  else if(currentFilter==='rate') data=data.filter(a=>a.rateExch);
+  else if(currentFilter==='ein')  data=data.filter(a=>a.einExch);
+  else if(currentFilter==='dep')  data=data.filter(a=>a.dsExch);
+  else if(currentFilter==='highCx') data=data.filter(a=>a.complexity!=null&&a.complexity>=4);
+  else if(currentFilter.startsWith('cadence-')){
+    const cad=currentFilter.replace('cadence-','');
+    data=data.filter(a=>{const v=cadenceMap[a.name];return Array.isArray(v)?v.includes(cad):v===cad;});
+  }
+  if(currentSearch){
+    const q=currentSearch.toLowerCase();
+    data=data.filter(a=>a.name.toLowerCase().includes(q)||a.agency.toLowerCase().includes(q)||a.desc.toLowerCase().includes(q)||(a.sysCode&&a.sysCode.toLowerCase().includes(q)));
+  }
+  const agSortGetters={
+    name:a=>a.name, agency:a=>a.agency, taxType:a=>a.taxType,
+    portal:a=>a.portal, exchange:a=>a.exchange,
+    cadence:a=>(Array.isArray(cadenceMap[a.name])?cadenceMap[a.name][0]:cadenceMap[a.name])||'',
+    method:a=>a.exchangeMethod||'', complexity:a=>a.complexity??-1,
+    avg2025:a=>avgDaysMap[a.name]??-1, avg2026:a=>avgDays2026Map[a.name]??-1,
+  };
+  const {col:agCol,dir:agDir}=sortState.agency;
+  if(agCol&&agSortGetters[agCol]) data=sortBy(data,agSortGetters[agCol],agDir);
+  document.getElementById("agencyTableBody").innerHTML=data.map(a=>`
+    <tr>
+      <td><strong>${a.name}</strong></td>
+      <td style="display:none"><span class="sys-code">${a.sysCode||'—'}</span></td>
+      <td style="max-width:200px"><div style="font-weight:600;font-size:11px;line-height:1.3">${a.agency}</div><div style="color:#9ca3af;font-size:10px;margin-top:1px">${a.desc}</div></td>
+      <td>${taxTag(a.taxType)}</td>
+      <td>${dotHtml(a.portal)}</td>
+      <td>${dotHtml(a.exchange)}</td>
+      <td>${a.exchange==='NO' && !cadenceMap[a.name] ? naCell() : cadenceHtml(a.name)}</td>
+      <td>${a.exchange==='NO' && !a.exchangeMethod ? naCell() : exMethodBadge(a.exchangeMethod)+(extraExchangeMethodMap[a.name]?' '+exMethodBadge(extraExchangeMethodMap[a.name]):'')}</td>
+      <td>${a.exchange==='NO' ? naCell() : exLabels(a)}</td>
+      <td>${a.exchange==='NO' && (a.complexity===null||a.complexity===undefined) ? naCell() : cxDots(a.complexity)}</td>
+      <td>${a.exchange==='NO' && avgDaysMap[a.name]===undefined ? naCell() : avgDaysHtml(a.name)}</td>
+      <td>${a.exchange==='NO' && avgDays2026Map[a.name]===undefined ? naCell() : avgDaysHtml(a.name, true)}</td>
+    </tr>`).join('');
+  document.getElementById("rowCount").textContent=`Showing ${data.length} of ${agencies.length} agencies`;
+}
+renderTable();
+
+// ─── AUTHORIZATION DATA (cols O-U from Agency List Short) ──────────────────
+const authData = [
+  {name:"AL SIT",  agency:"Alabama Department of Revenue",               taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"AL SUI",  agency:"Alabama Department of Labor",                 taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"AK SUI",  agency:"Alaska Dept. of Labor & Workforce Dev.",      taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"AZ SIT",  agency:"Arizona Withholding / Dept. of Revenue",      taxType:"SIT",          authProcess:"Joint effort",           pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"AZ SUI",  agency:"Arizona Dept. of Economic Security",          taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"AR SIT",  agency:"Dept. of Finance and Administration",         taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"AR SUI",  agency:"Arkansas Dept. of Workforce Services",        taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"CA SIT/SUI", agency:"CA-EDD",                                   taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"CO SIT",  agency:"Colorado Department of Revenue",              taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"CO SUI",  agency:"Colorado State Treasurer / CO Dept. of Labor",taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"CO PFML", agency:"Colorado - FAMLI",                            taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"CT SIT",  agency:"Commissioner of Revenue Services",            taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"CT SUI",  agency:"Connecticut Dept. of Labor",                  taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"CT PFML", agency:"Connecticut Paid Leave Authority",            taxType:"PFML",         authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"DE SIT",  agency:"Delaware Division of Revenue",                taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"DE SUI",  agency:"Delaware Dept. of Labor",                     taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"DC SIT",  agency:"D.C. Treasurer / Office of Tax and Revenue",  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"DC SUI",  agency:"DC Dept. of Employment Services",             taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"FL SUI",  agency:"Florida Department of Revenue",               taxType:"SUI",          authProcess:"Gusto self-serve+ INFO", pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"GA SIT",  agency:"Georgia Department of Revenue",               taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"GA SUI",  agency:"Georgia Department of Labor",                 taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"HI SUI",  agency:"Hawaii Dept. of Labor & Industrial Relations", taxType:"SUI",         authProcess:"Joint effort",           pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"HI SIT",  agency:"Hawaii Department of Taxation",               taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"ID SIT",  agency:"Idaho State Tax Commission",                  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"ID SUI",  agency:"Idaho Dept. of Labor",                        taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"IL SIT",  agency:"Illinois Withholding / Dept. of Revenue",     taxType:"SIT",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"IL SUI",  agency:"Illinois Unemployment / IDES",                taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"IN SIT",  agency:"Indiana Department of Revenue",               taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"IN SUI",  agency:"Indiana Dept. of Workforce Development",      taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"IA SIT",  agency:"Iowa Department of Revenue",                  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"IA SUI",  agency:"Iowa Workforce Development",                  taxType:"SUI",          authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"KS SIT",  agency:"Kansas Department of Revenue",                taxType:"SIT",          authProcess:"Other (see notes)",      pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"KS SUI",  agency:"Kansas Dept. of Labor",                       taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:false, portal:true,  amend:false, exchange:true},
+  {name:"KY SIT",  agency:"Kentucky Department of Revenue",              taxType:"SIT",          authProcess:"Other (see notes)",      pay:false, file:false, phone:false, portal:true,  amend:true,  exchange:false},
+  {name:"KY SUI",  agency:"Kentucky Office of Unemployment Insurance",   taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"LA SIT",  agency:"Louisiana Department of Revenue",             taxType:"SIT",          authProcess:"Other (see notes)",      pay:false, file:false, phone:false, portal:true,  amend:true,  exchange:false},
+  {name:"LA SUI",  agency:"Louisiana Workforce Commission",              taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"ME SIT",  agency:"Maine Revenue Services",                      taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"ME SUI",  agency:"Maine Department of Labor",                   taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"MD SIT",  agency:"Maryland Comptroller of Maryland",            taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"MD SUI",  agency:"Maryland UI Fund / Dept. of Labor",           taxType:"SUI",          authProcess:"POA-only",               pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"MA SIT",  agency:"Commonwealth of Massachusetts / DOR",         taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"MA PFML", agency:"Massachusetts Dept. of Revenue (PFML)",       taxType:"PFML",         authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"MA SUI",  agency:"MA Division of Unemployment Assistance",      taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"MI SIT",  agency:"Michigan Department of Treasury",             taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"MI SUI",  agency:"Michigan Dept. of Labor and Economic Opp.",   taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"MN SIT",  agency:"Minnesota Dept. of Revenue",                  taxType:"SIT",          authProcess:"Joint effort",           pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"MN SUI",  agency:"Minnesota Dept. of Employment & Economic Dev.",taxType:"SUI",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"MS SIT",  agency:"Mississippi Department of Revenue",           taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"MS SUI",  agency:"Mississippi Dept. of Employment Security",    taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"MO SIT",  agency:"Missouri Department of Revenue",              taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"MO SUI",  agency:"MO Dept. of Labor and Industrial Relations",  taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"MT SIT",  agency:"Montana Department of Revenue",               taxType:"SIT",          authProcess:"Joint effort",           pay:true,  file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"MT SUI",  agency:"Montana Dept. of Labor and Industry",         taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"NE SIT",  agency:"Nebraska Dept. of Revenue",                   taxType:"SIT",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"NE SUI",  agency:"Nebraska Department of Labor",                taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:false, amend:false, exchange:true},
+  {name:"NV SUI",  agency:"Nevada Employment Security Division",         taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"NV MBT",  agency:"Nevada Department of Taxation",               taxType:"MBT",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"NH SUI",  agency:"New Hampshire Employment Security",           taxType:"SUI",          authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:false, amend:false, exchange:false},
+  {name:"NJ SUI",  agency:"NJ Dept. of Labor and Workforce Dev.",        taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"NJ SIT",  agency:"New Jersey Division of Taxation",             taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"NM SIT",  agency:"New Mexico Taxation & Revenue Dept.",         taxType:"SIT",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"NM SUI",  agency:"New Mexico Dept. of Workforce Solutions",     taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:false, portal:true,  amend:true,  exchange:true},
+  {name:"NM WC",   agency:"New Mexico Taxation & Revenue (WC)",          taxType:"WC",authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"NY SIT",  agency:"New York Withholding / Dept. of Tax & Fin.",  taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"NY SUI",  agency:"New York Unemployment / Dept. of Labor",      taxType:"SUI",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"NC SIT",  agency:"North Carolina Department of Revenue",        taxType:"SIT",          authProcess:"POA-only",               pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"NC SUI",  agency:"NC Division of Employment Security",          taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"ND SIT",  agency:"North Dakota Office of State Tax Commissioner",taxType:"SIT",         authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"ND SUI",  agency:"Job Service North Dakota",                    taxType:"SUI",          authProcess:"Other (see notes)",      pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"OH SIT",  agency:"Ohio Dept. of Taxation",                      taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:false, portal:true,  amend:false, exchange:false},
+  {name:"OH SUI",  agency:"Ohio Dept. of Job and Family Services",       taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"OK SIT",  agency:"Oklahoma Tax Commission",                     taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"OK SUI",  agency:"Oklahoma Employment Security Commission",     taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"OR SIT",  agency:"Oregon Department of Revenue",                taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"OR SUI",  agency:"Oregon Employment Department",                taxType:"SUI",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"PA SIT",  agency:"Pennsylvania Department of Revenue",          taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"PA SUI",  agency:"Pennsylvania Dept. of Labor & Industry",      taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"RI SIT",  agency:"Rhode Island Division of Taxation",           taxType:"SIT",          authProcess:"POA-only",               pay:true,  file:false, phone:false, portal:false, amend:false, exchange:false},
+  {name:"RI SUI",  agency:"Rhode Island Dept. of Labor and Training",    taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
+  {name:"SC SIT",  agency:"South Carolina Dept. of Revenue",             taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"SC SUI",  agency:"SC Dept. of Employment and Workforce",        taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"SD SUI",  agency:"South Dakota Dept. of Labor and Regulation",  taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:true},
+  {name:"TN SUI",  agency:"Tennessee Dept. of Labor and Workforce Dev.", taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"TX SUI",  agency:"Texas Workforce Commission",                  taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"UT SIT",  agency:"Utah State Tax Commission",                   taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"UT SUI",  agency:"Utah Dept. of Workforce Services",            taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"VT SIT",  agency:"Vermont Department of Taxes",                 taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"VT SUI",  agency:"Vermont Department of Labor",                 taxType:"SUI",          authProcess:"POA-only",               pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"VA SIT",  agency:"Virginia Department of Taxation",             taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"VA SUI",  agency:"Virginia Employment Commission",              taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"WA LNI",  agency:"Washington Dept. of Labor & Industries",      taxType:"WC",authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"WA SUI",  agency:"Washington Employment Security Dept.",        taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"WA PFML", agency:"Washington Employment Security Dept. (PFML)", taxType:"PFML",         authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"WV SIT",  agency:"West Virginia State Tax Department",          taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"WV SUI",  agency:"WorkForce West Virginia",                     taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"WI SIT",  agency:"Wisconsin Department of Revenue",             taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"WI SUI",  agency:"Wisconsin Dept. of Workforce Development",    taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"WY SUI",  agency:"Wyoming Dept. of Workforce Services",         taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"WY WC",   agency:"Wyoming Dept. of Workforce Services (WC)",    taxType:"WC",authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+];
+
+// ─── AUTH TABLE RENDER ────────────────────────────────────────────────────────
+let authFilterType = 'all';
+let authSearch = '';
+
+function chk(v){
+  return v
+    ? `<span class="auth-yes">✓</span>`
+    : `<span class="auth-no">—</span>`;
+}
+
+function authProcTag(p){
+  if(!p) return '';
+  const map = {
+    'POA-only':               'proc-poa',
+    'Customer self-serve':    'proc-customer',
+    'Gusto self-serve':       'proc-gusto',
+    'Gusto self-serve+ INFO': 'proc-gusto-info',
+    'Joint effort':           'proc-joint',
+  };
+  const cls = map[p] || 'proc-other';
+  return `<span class="proc-tag ${cls}">${p}</span>`;
+}
+
+function renderAuthTable(){
+  const filtered = authData.filter(a => {
+    const typeMatch = authFilterType === 'all' || a.taxType === authFilterType;
+    const s = authSearch.toLowerCase();
+    const textMatch = !s || a.name.toLowerCase().includes(s) || a.agency.toLowerCase().includes(s);
+    return typeMatch && textMatch;
+  });
+  const authSortGetters={
+    name:a=>a.name, agency:a=>a.agency, taxType:a=>a.taxType,
+    authProcess:a=>a.authProcess, pay:a=>a.pay?1:0, file:a=>a.file?1:0,
+    phone:a=>a.phone?1:0, portal:a=>a.portal?1:0, amend:a=>a.amend?1:0, exchange:a=>a.exchange?1:0,
+  };
+  const {col:auCol,dir:auDir}=sortState.auth;
+  let sortedAuth=filtered;
+  if(auCol&&authSortGetters[auCol]) sortedAuth=sortBy(filtered,authSortGetters[auCol],auDir);
+  document.getElementById('authTableBody').innerHTML = sortedAuth.map(a => `
+    <tr>
+      <td style="font-weight:600;white-space:nowrap">${a.name}</td>
+      <td style="max-width:220px;font-size:11px;color:var(--text-muted)">${a.agency}</td>
+      <td><span class="tag tag-${a.taxType.replace(/[^a-zA-Z]/g,'')}">${a.taxType}</span></td>
+      <td>${authProcTag(a.authProcess)}</td>
+      <td class="auth-cell">${chk(a.pay)}</td>
+      <td class="auth-cell">${chk(a.file)}</td>
+      <td class="auth-cell">${chk(a.phone)}</td>
+      <td class="auth-cell">${chk(a.portal)}</td>
+      <td class="auth-cell">${chk(a.amend)}</td>
+      <td class="auth-cell">${chk(a.exchange)}</td>
+    </tr>`).join('');
+  document.getElementById('authRowCount').textContent = `Showing ${filtered.length} of ${authData.length} agencies`;
+}
+
+function setAuthFilter(btn, type){
+  authFilterType = type;
+  document.querySelectorAll('#authTableBody').forEach(()=>{});
+  btn.closest('.table-header').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAuthTable();
+}
+
+function searchAuthTable(val){
+  authSearch = val;
+  renderAuthTable();
+}
+
+renderAuthTable();
+
+// ─── AUTH BREAKDOWN KPI ───────────────────────────────────────────────────────
+(function(){
+  const n = authData.length;
+  const actions = [
+    {label:"Pay",            key:"pay"},
+    {label:"File",           key:"file"},
+    {label:"Phone / Agency", key:"phone"},
+    {label:"Portal / Bot",   key:"portal"},
+    {label:"Amendments",     key:"amend"},
+    {label:"Data Exchange",  key:"exchange"},
+  ];
+  const items = actions.map(a=>{
+    const count = authData.filter(d=>d[a.key]).length;
+    const pct   = Math.round(count/n*100);
+    return `
+      <div style="flex:1;min-width:110px;padding:12px 16px;border-right:1px solid var(--border)">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">${a.label}</div>
+        <div style="font-size:24px;font-weight:800;color:var(--blue);line-height:1">${count}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${pct}% of agencies</div>
+        <div style="margin-top:8px;background:var(--gray-light);border-radius:100px;height:4px;overflow:hidden">
+          <div style="width:${pct}%;height:100%;background:var(--blue);border-radius:100px"></div>
+        </div>
+      </div>`;
+  }).join('');
+  document.getElementById('authBreakdownKpi').innerHTML=`
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px">Authorization Required by Action</div>
+    <div style="display:flex;flex-wrap:wrap;margin:0 -1px">${items}</div>`;
+})();
+
+// ─── POA DATA (cols S-Y from Copy of POA Forms) ───────────────────────────────
+const poaData = [
+  {name:"AL SIT", sysCode:"01-000-0000-SIT-000", desc:"Alabama - Employee Withholding", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"AL SUI", sysCode:"01-000-0000-ER_SUTA-000", desc:"Alabama - Employer Unemployment", form:"Alabama Power of Attorney", sig:"WET SIG", trans:"FAX/MAIL", notary:true, mou:false, inapp:true, use:"", agencyCall:true},
+  {name:"AK SUI", sysCode:"02-000-0000-ER_SUTA-000", desc:"Alaska - Employer Unemployment", form:"Alaska Power of Attorney", sig:"WET SIG", trans:"FAX/MAIL", notary:true, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"AZ SIT", sysCode:"04-000-0000-SIT-000", desc:"Arizona - Employee Withholding", form:"Form 821-PSC / Form 285", sig:"ESIG", trans:"", notary:false, mou:false, inapp:true, use:"", agencyCall:true},
+  {name:"AZ SUI", sysCode:"04-000-0000-ER_SUTA-000", desc:"Arizona - Employer Unemployment", form:"UIT-1146A", sig:"NOT SPECIFIED", trans:"FAX/MAIL/EMAIL", notary:false, mou:false, inapp:false, accepts8655:true, use:"", agencyCall:true},
+  {name:"AR SIT", sysCode:"05-000-0000-SIT-000", desc:"Arkansas - Employee Withholding", form:"Arkansas Tax Power of Attorney Form", sig:"EITHER", trans:"FAX/MAIL", notary:false, mou:false, inapp:false, accepts8655:true, use:"", agencyCall:true},
+  {name:"AR SUI", sysCode:"05-000-0000-ER_SUTA-000", desc:"Arkansas - Employer Unemployment", form:"Form 8655", sig:"No requirements", trans:"FAX", notary:false, mou:false, inapp:true, use:"", agencyCall:true, accepts8655:true},
+  {name:"CA SIT/SUI", sysCode:"06-000-0000-SIT-000", desc:"California - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"CO SIT", sysCode:"08-000-0000-SIT-000", desc:"Colorado - Employee Withholding", form:"Form DR 0145", sig:"WET", trans:"MAIL/ELEC", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"CO SUI", sysCode:"08-000-0000-ER_SUTA-000", desc:"Colorado - Employer Unemployment", form:"", sig:"WET", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"CO PFML", sysCode:"08-000-0000-FLI-000", desc:"Colorado - Family and Medical Leave Insurance", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"CT SIT", sysCode:"09-000-0000-SIT-000", desc:"Connecticut - Employee Withholding", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"CT SUI", sysCode:"09-000-0000-ER_SUTA-000", desc:"Connecticut - Employer Unemployment", form:"", sig:"LIKELY WET", trans:"ELEC", notary:false, mou:false, inapp:false, use:"Speak w/ agency if TPA not on file", accepts8655:true},
+  {name:"CT PFML", sysCode:"09-000-0000-FLI-000", desc:"Connecticut - Paid Family and Medical Leave Insurance", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"DE SIT", sysCode:"10-000-0000-SIT-000", desc:"Delaware - Employee Withholding", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"DE SUI", sysCode:"10-000-0000-ER_SUTA-000", desc:"Delaware - Employer Unemployment", form:"Delaware Power of Attorney", sig:"WET SIG", trans:"FAX", notary:true, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"DC SIT", sysCode:"11-000-0000-SIT-000", desc:"District of Columbia - Employee Withholding", form:"D-2848 Power of Attorney and Declaration of Representation", sig:"NOT SPECIFIED", trans:"ELEC/EMAIL/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"DC SUI/PFL", sysCode:"11-000-0000-ER_FLI-000", desc:"District of Columbia - Employer Unemployment", form:"Form OUCTAX-1 / DC Power of Attorney", sig:"EITHER", trans:"ELEC", notary:false, mou:false, inapp:true, use:"Speak w/ agency, process exchange"},
+  {name:"FL SUI", sysCode:"12-000-0000-ER_SUTA-000", desc:"Florida - Employer Unemployment", form:"Form DR-835 Power of Attorney", sig:"NOT SPECIFIED", trans:"FAX/MAIL", notary:false, mou:true, inapp:false, use:"MOU, Speak w/ agency"},
+  {name:"GA SIT", sysCode:"13-000-0000-SIT-000", desc:"Georgia - Employee Withholding", form:"RD-1063 Reporting Agent Authorization", sig:"NOT SPECIFIED", trans:"ELEC/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"GA SUI", sysCode:"13-000-0000-ER_SUTA-000", desc:"Georgia - Employer Unemployment", form:"GA Power of Attorney", sig:"WET SIG", trans:"FAX", notary:true, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"HI SUI", sysCode:"15-000-0000-ER_SUTA-000", desc:"Hawaii - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"HI SIT", sysCode:"15-000-0000-SIT-000", desc:"Hawaii - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"ID SIT", sysCode:"16-000-0000-SIT-000", desc:"Idaho - Employee Withholding", form:"Form ID-POA Power of Attorney", sig:"NOT SPECIFIED", trans:"FAX/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true, accepts8655:true},
+  {name:"ID SUI", sysCode:"16-000-0000-ER_SUTA-000", desc:"Idaho - Employer Unemployment", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:"", accepts8655:true},
+  {name:"IL SIT", sysCode:"17-000-0000-SIT-000", desc:"Illinois - Employee Withholding", form:"IL-8655 Reporting Agent Authorization", sig:"EITHER", trans:"", notary:false, mou:false, inapp:true, use:"", agencyCall:true},
+  {name:"IL SUI", sysCode:"17-000-0000-ER_SUTA-000", desc:"Illinois - Employer Unemployment", form:"LE-10/UI-1M", sig:"EITHER", trans:"ENROLLMENT FILE", notary:false, mou:true, inapp:true, use:"Speak w/ agency, MOU, process enrollment files"},
+  {name:"IN SIT", sysCode:"18-000-0000-SIT-000", desc:"Indiana - Employee Withholding", form:"Indiana Department of Revenue POA-1", sig:"EITHER", trans:"FAX/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true, accepts8655:true},
+  {name:"IN SUI", sysCode:"18-000-0000-ER_SUTA-000", desc:"Indiana - Employer Unemployment", form:"", sig:"No requirements", trans:"N/A", notary:false, mou:false, inapp:false, use:""},
+  {name:"IA SIT", sysCode:"19-000-0000-SIT-000", desc:"Iowa - Employee Withholding", form:"Third Party Authorized Entity Representative Form", sig:"EITHER", trans:"FAX/MAIL/ELEC", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"IA SUI", sysCode:"19-000-0000-ER_SUTA-000", desc:"Iowa - Employer Unemployment", form:"Iowa Power of Attorney 68-0092", sig:"EITHER", trans:"FAX", notary:false, mou:false, inapp:true, use:"Varies"},
+  {name:"KS SIT", sysCode:"20-000-0000-SIT-000", desc:"Kansas - Employee Withholding", form:"", sig:"", trans:"FAX/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true, accepts8655:true},
+  {name:"KS SUI", sysCode:"20-000-0000-ER_SUTA-000", desc:"Kansas - Employer Unemployment", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"KY SIT", sysCode:"21-000-0000-SIT-000", desc:"Kentucky - Employee Withholding", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"KY SUI", sysCode:"21-000-0000-ER_SUTA-000", desc:"Kentucky - Employer Unemployment", form:"Kentucky Power of Attorney", sig:"", trans:"FAX/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"LA SIT", sysCode:"22-000-0000-SIT-000", desc:"Louisiana - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"LA SUI", sysCode:"22-000-0000-ER_SUTA-000", desc:"Louisiana - Employer Unemployment", form:"", sig:"No requirements", trans:"ENROLLMENT FILE", notary:false, mou:false, inapp:false, use:""},
+  {name:"ME SIT", sysCode:"23-000-0000-SIT-000", desc:"Maine - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"ME SUI", sysCode:"23-000-0000-ER_SUTA-000", desc:"Maine - Employer Unemployment", form:"", sig:"", trans:"EMAIL", notary:false, mou:false, inapp:false, use:"", accepts8655:true},
+  {name:"MD SIT", sysCode:"24-000-0000-SIT-000", desc:"Maryland - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:true, use:""},
+  {name:"MD SUI", sysCode:"24-000-0000-ER_SUTA-000", desc:"Maryland - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:true, use:""},
+  {name:"MA SIT", sysCode:"25-000-0000-SIT-000", desc:"Massachusetts - Employee Withholding", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:""},
+  {name:"MA PFML", sysCode:"25-000-0000-FLI-000", desc:"Massachusetts - Paid Family and Medical Leave", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:""},
+  {name:"MA SUI", sysCode:"25-000-0000-ER_SUTA-000", desc:"Massachusetts - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"MI SIT", sysCode:"26-000-0000-SIT-000", desc:"Michigan - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"MI SUI", sysCode:"26-000-0000-ER_SUTA-000", desc:"Michigan - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"MN SIT", sysCode:"27-000-0000-SIT-000", desc:"Minnesota - Employee Withholding", form:"Form REV184b, Business Power of Attorney", sig:"WET SIG", trans:"FAX/MAIL/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"MN SUI", sysCode:"27-000-0000-ER_SUTA-000", desc:"Minnesota - Employer Unemployment", form:"", sig:"No requirements", trans:"N/A", notary:false, mou:false, inapp:false, use:""},
+  {name:"MS SIT", sysCode:"28-000-0000-SIT-000", desc:"Mississippi - Employee Withholding", form:"", sig:"", trans:"FAX/EMAIL", notary:false, mou:false, inapp:false, use:""},
+  {name:"MS SUI", sysCode:"28-000-0000-ER_SUTA-000", desc:"Mississippi - Employer Unemployment", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:"", accepts8655:true},
+  {name:"MO SIT", sysCode:"29-000-0000-SIT-000", desc:"Missouri - Employee Withholding", form:"", sig:"No requirements", trans:"N/A", notary:false, mou:true, inapp:false, use:"", accepts8655:true},
+  {name:"MO SUI", sysCode:"29-000-0000-ER_SUTA-000", desc:"Missouri - Employer Unemployment", form:"", sig:"EITHER", trans:"EMAIL/FAX/MAIL", notary:false, mou:false, inapp:false, use:""},
+  {name:"MT SIT", sysCode:"30-000-0000-SIT-000", desc:"Montana - Employee Withholding", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:"", accepts8655:true},
+  {name:"MT SUI", sysCode:"30-000-0000-ER_SUTA-000", desc:"Montana - Employer Unemployment", form:"Montana DLI Authorization Form", sig:"NOT SPECIFIED", trans:"", notary:false, mou:false, inapp:true, use:"Speak w/ agency, file and pay?", accepts8655:true},
+  {name:"NE SIT", sysCode:"31-000-0000-SIT-000", desc:"Nebraska - Employee Withholding", form:"Form 33 Power of Attorney", sig:"WET SIG", trans:"ELEC/FAX/MAIL", notary:false, mou:true, inapp:true, use:"MOU, speak w/ agency"},
+  {name:"NE SUI", sysCode:"31-000-0000-ER_SUTA-000", desc:"Nebraska - Employer Unemployment", form:"", sig:"", trans:"FAX/EMAIL/MAIL", notary:false, mou:false, inapp:false, use:"", accepts8655:true},
+  {name:"NV SUI", sysCode:"32-000-0000-ER_SUTA-000", desc:"Nevada - Employer Unemployment", form:"", sig:"", trans:"ELEC", notary:false, mou:false, inapp:false, use:""},
+  {name:"NV MBT", sysCode:"32-000-0000-ER_POP-003", desc:"Nevada - Modified Business Tax", form:"Form 8655", sig:"", trans:"EMAIL", notary:false, mou:false, inapp:true, use:"", accepts8655:true},
+  {name:"NH SUI", sysCode:"33-000-0000-ER_SUTA-000", desc:"New Hampshire - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"NJ SUI", sysCode:"34-000-0000-ER_SUTA-000", desc:"New Jersey - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"NJ SIT", sysCode:"34-000-0000-SIT-000", desc:"New Jersey - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"NM SIT", sysCode:"35-000-0000-SIT-000", desc:"New Mexico - Employee Withholding", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:""},
+  {name:"NM SUI", sysCode:"35-000-0000-ER_SUTA-000", desc:"New Mexico - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"NM WC", sysCode:"35-000-0000-WC-000", desc:"New Mexico - Workers' Compensation Fee", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:""},
+  {name:"NY SIT", sysCode:"36-000-0000-SIT-000", desc:"New York - Employee Withholding", form:"Form TR-2000 / TR 579 WT", sig:"EITHER", trans:"ELEC", notary:false, mou:false, inapp:true, use:""},
+  {name:"NY SUI", sysCode:"36-000-0000-ER_SUTA-000", desc:"New York - Employer Unemployment", form:"Form IA 900", sig:"No requirements", trans:"ENROLLMENT FILE", notary:false, mou:true, inapp:false, use:""},
+  {name:"NC SIT", sysCode:"37-000-0000-SIT-000", desc:"North Carolina - Employee Withholding", form:"GEN-53", sig:"LIKELY WET", trans:"", notary:false, mou:true, inapp:true, use:""},
+  {name:"NC SUI", sysCode:"37-000-0000-ER_SUTA-000", desc:"North Carolina - Employer Unemployment", form:"Power of Attorney and Declaration of Representative", sig:"EITHER", trans:"FAX/MAIL/ELEC", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"ND SIT", sysCode:"38-000-0000-SIT-000", desc:"North Dakota - Employee Withholding", form:"Form 500", sig:"WET", trans:"FAX/MAIL/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"ND SUI", sysCode:"38-000-0000-ER_SUTA-000", desc:"North Dakota - Employer Unemployment", form:"SFN 59128 Authorization to Disclose Information", sig:"EITHER", trans:"FAX/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"OH SIT", sysCode:"39-000-0000-SIT-000", desc:"Ohio - Employee Withholding", form:"N/A", sig:"EITHER", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A", accepts8655:true},
+  {name:"OH SUI", sysCode:"39-000-0000-ER_SUTA-000", desc:"Ohio - Employer Unemployment", form:"JFS 20106 Agent Authorization Form", sig:"ESIG", trans:"ELEC", notary:false, mou:false, inapp:true, use:"", agencyCall:true},
+  {name:"OK SIT", sysCode:"40-000-0000-SIT-000", desc:"Oklahoma - Employee Withholding", form:"Form BT-129", sig:"EITHER", trans:"ELEC/FAX/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"OK SUI", sysCode:"40-000-0000-ER_SUTA-000", desc:"Oklahoma - Employer Unemployment", form:"OES-190T", sig:"WET SIG", trans:"FAX", notary:true, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"OR SIT", sysCode:"41-000-0000-SIT-000", desc:"Oregon - Employee Withholding", form:"", sig:"EITHER", trans:"ELEC/EMAIL/FAX/MAIL", notary:false, mou:false, inapp:false, use:""},
+  {name:"OR SUI", sysCode:"41-000-0000-ER_SUTA-000", desc:"Oregon - Employer Unemployment", form:"", sig:"EITHER", trans:"ELEC/EMAIL/FAX/MAIL", notary:false, mou:false, inapp:false, use:""},
+  {name:"PA SIT", sysCode:"42-000-0000-SIT-000", desc:"Pennsylvania - Employee Withholding", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"PA SUI", sysCode:"42-000-0000-ER_SUTA-000", desc:"Pennsylvania - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"RI SIT", sysCode:"44-000-0000-SIT-000", desc:"Rhode Island - Employee Withholding", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"RI SUI", sysCode:"44-000-0000-ER_SUTA-000", desc:"Rhode Island - Employer Unemployment", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"SC SIT", sysCode:"45-000-0000-SIT-000", desc:"South Carolina - Employee Withholding", form:"SC2848", sig:"EITHER", trans:"EMAIL/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"SC SUI", sysCode:"45-000-0000-ER_SUTA-000", desc:"South Carolina - Employer Unemployment", form:"UCE-1010 Written Authorization", sig:"NOT SPECIFIED", trans:"FAX", notary:false, mou:false, inapp:true, use:"", agencyCall:true},
+  {name:"SD SUI", sysCode:"46-000-0000-ER_SUTA-000", desc:"South Dakota - Employer Unemployment", form:"SD EForm 2108 V3", sig:"EITHER", trans:"FAX/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"TN SUI", sysCode:"47-000-0000-ER_SUTA-000", desc:"Tennessee - Employer Unemployment", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"TX SUI", sysCode:"48-000-0000-ER_SUTA-000", desc:"Texas - Employer Unemployment", form:"C-42", sig:"PORTAL", trans:"ELEC", notary:false, mou:false, inapp:false, use:"Speak w/ agency, file and pay potentially"},
+  {name:"UT SIT", sysCode:"49-000-0000-SIT-000", desc:"Utah - Employee Withholding", form:"", sig:"EITHER", trans:"MAIL", notary:true, mou:false, inapp:false, use:""},
+  {name:"UT SUI", sysCode:"49-000-0000-ER_SUTA-000", desc:"Utah - Employer Unemployment", form:"DWS-UI Form POA", sig:"LIKELY WET", trans:"ELEC/FAX/MAIL", notary:true, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"VT SIT", sysCode:"50-000-0000-SIT-000", desc:"Vermont - Employee Withholding", form:"Form PA-1 Special Power of Attorney", sig:"LIKELY WET", trans:"FAX", notary:false, mou:false, inapp:false, use:"Speak w/ agency"},
+  {name:"VT SUI", sysCode:"50-000-0000-ER_SUTA-000", desc:"Vermont - Employer Unemployment", form:"C-50 Limited Power of Attorney", sig:"WET SIG", trans:"MAIL", notary:true, mou:false, inapp:true, use:"File, pay, speak with agency", pf:true},
+  {name:"VA SIT", sysCode:"51-000-0000-SIT-000", desc:"Virginia - Employee Withholding", form:"Form 8655", sig:"EITHER", trans:"FAX/MAIL", notary:false, mou:true, inapp:true, use:"", agencyCall:true},
+  {name:"VA SUI", sysCode:"51-000-0000-ER_SUTA-000", desc:"Virginia - Employer Unemployment", form:"Form 8655 / Form PAR 101 Virginia Power of Attorney", sig:"WET", trans:"FAX", notary:false, mou:false, inapp:true, use:"", agencyCall:true, accepts8655:true},
+  {name:"WA LNI/WC", sysCode:"53-000-0000-SDI-000", desc:"Washington - Employer Labor and Industries", form:"WA L&I Third Party Representative Authorization", sig:"EITHER", trans:"ELEC/EMAIL/FAX", notary:false, mou:false, inapp:true, use:"File, pay, speak with agency"},
+  {name:"WA SUI", sysCode:"53-000-0000-ER_SUTA-000", desc:"Washington - Employer Unemployment", form:"Form 1200 Power of Attorney for UI", sig:"EITHER", trans:"FAX/EMAIL/MAIL", notary:false, mou:false, inapp:true, use:"", agencyCall:true},
+  {name:"WA PFML", sysCode:"53-000-0000-FLI-000", desc:"Washington - Family and Medical Leave Insurance", form:"WA Power of Attorney Form", sig:"NOT SPECIFIED", trans:"FAX/ELEC", notary:false, mou:false, inapp:false, use:"Speak w/ agency, access client data"},
+  {name:"WV SIT", sysCode:"54-000-0000-SIT-000", desc:"West Virginia - Employee Withholding", form:"WV-2848", sig:"WET SIG", trans:"MAIL", notary:true, mou:false, inapp:false, use:"", agencyCall:true},
+  {name:"WV SUI", sysCode:"54-000-0000-ER_SUTA-000", desc:"West Virginia - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"WI SIT", sysCode:"55-000-0000-SIT-000", desc:"Wisconsin - Employee Withholding", form:"Form A-222", sig:"EITHER", trans:"FAX", notary:false, mou:false, inapp:false, use:"", agencyCall:true, accepts8655:true},
+  {name:"WI SUI", sysCode:"55-000-0000-ER_SUTA-000", desc:"Wisconsin - Employer Unemployment", form:"", sig:"EITHER", trans:"FAX/EMAIL/MAIL", notary:false, mou:false, inapp:false, use:""},
+  {name:"WY SUI", sysCode:"56-000-0000-ER_SUTA-000", desc:"Wyoming - Employer Unemployment", form:"State of Wyoming Power of Attorney", sig:"EITHER", trans:"FAX/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true, accepts8655:true},
+  {name:"WY WC", sysCode:"56-000-0000-ER_WC-000", desc:"Wyoming - Workers' Compensation", form:"State of Wyoming Power of Attorney", sig:"EITHER", trans:"FAX/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true, accepts8655:true}
+];
+
+let poaSearch = '';
+
+function boolBadge(val, trueLabel, falseLabel){
+  if(val==='N/A') return `<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>`;
+  if(val) return `<span style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:#dcfce7;color:#166534;">${trueLabel||'YES'}</span>`;
+  return `<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:#f3f4f6;color:#9ca3af;">${falseLabel||'NO'}</span>`;
+}
+
+function sigBadge(v){
+  if(!v) return '<span style="color:#d1d5db">—</span>';
+  const map = {
+    'WET SIG':    {bg:'#fce7f3',color:'#9d174d', label:'WET'},
+    'WET':        {bg:'#fce7f3',color:'#9d174d'},
+    'ESIG':       {bg:'#dbeafe',color:'#1e40af'},
+    'EITHER':     {bg:'#ede9fe',color:'#5b21b6'},
+    'PORTAL':     {bg:'#d1fae5',color:'#065f46'},
+    'LIKELY WET': {bg:'#fef3c7',color:'#92400e'},
+    'NOT SPECIFIED': {bg:'#111827',color:'#ffffff'},
+  };
+  const s = map[v.toUpperCase()] || {bg:'#f3f4f6',color:'#6b7280'};
+  return `<span style="display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;background:${s.bg};color:${s.color}">${s.label||v}</span>`;
+}
+
+function transBadge(v){
+  if(!v) return '<span style="color:#d1d5db">—</span>';
+  if(v==='N/A') return `<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>`;
+  const methods = v.split('/').map(m => m.trim());
+  const map = {
+    'FAX':            {bg:'#fef3c7',color:'#92400e'},
+    'MAIL':           {bg:'#dbeafe',color:'#1e40af'},
+    'EMAIL':          {bg:'#d1fae5',color:'#065f46'},
+    'ELEC':           {bg:'#ede9fe',color:'#5b21b6'},
+    'PORTAL':         {bg:'#dcfce7',color:'#166534'},
+    'ENROLLMENT FILE':{bg:'#fce7f3',color:'#9d174d'},
+  };
+  return methods.map(m => {
+    const s = map[m.toUpperCase()] || {bg:'#f3f4f6',color:'#6b7280'};
+    return `<span style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;background:${s.bg};color:${s.color};margin:1px 2px 1px 0">${m}</span>`;
+  }).join('');
+}
+
+const authAgencyMap = Object.fromEntries(authData.map(a => [a.name, a.agency]));
+
+function renderPoaTable(){
+  const s = poaSearch.toLowerCase();
+  const filtered = poaData.filter(p =>
+    !s || p.name.toLowerCase().includes(s) || (authAgencyMap[p.name]||'').toLowerCase().includes(s) || p.form.toLowerCase().includes(s)
+  );
+  const poaSortGetters={
+    name:p=>p.name, desc:p=>authAgencyMap[p.name]||p.desc, sig:p=>p.sig||'',
+    trans:p=>p.trans||'', notary:p=>p.notary===true?1:0, mou:p=>p.mou===true?1:0,
+    accepts8655:p=>p.accepts8655===true?1:0, inapp:p=>p.inapp===true?1:0,
+    pf:p=>p.pf?1:0, agencyCall:p=>p.agencyCall===true?1:0, use:p=>p.use||'', form:p=>p.form||'',
+  };
+  const {col:poaCol,dir:poaDir}=sortState.poa;
+  let sortedPoa=filtered;
+  if(poaCol&&poaSortGetters[poaCol]) sortedPoa=sortBy(filtered,poaSortGetters[poaCol],poaDir);
+  document.getElementById('poaTableBody').innerHTML = sortedPoa.map(p => {
+    const agencyDisplay = authAgencyMap[p.name] || p.desc;
+    return `
+    <tr>
+      <td style="font-weight:600;white-space:nowrap">${p.name}</td>
+      <td style="max-width:220px;font-size:11px;color:var(--text-muted)">${agencyDisplay}</td>
+      <td style="white-space:nowrap">${sigBadge(p.sig)}</td>
+      <td>${transBadge(p.trans)}</td>
+      <td class="auth-cell">${boolBadge(p.notary,'YES','NO')}</td>
+      <td class="auth-cell">${boolBadge(p.mou,'YES','NO')}</td>
+      <td class="auth-cell">${boolBadge(p.accepts8655,'YES','NO')}</td>
+      <td class="auth-cell">${boolBadge(p.inapp,'YES','NO')}</td>
+      <td class="auth-cell">${p.pf ? '<span style="color:#166534;font-size:13px">✓</span>' : '<span style="color:#d1d5db">—</span>'}</td>
+      <td class="auth-cell">${p.use==='N/A' ? '<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>' : (p.agencyCall !== undefined ? p.agencyCall : (p.use && p.use.toLowerCase().includes('speak w/ agency'))) ? '<span style="color:#166534;font-size:13px">✓</span>' : '<span style="color:#d1d5db">—</span>'}</td>
+      <td style="font-size:11px;max-width:180px">${p.use==='N/A' ? '<span style="color:#9ca3af;font-style:italic">N/A</span>' : p.use || '<span style="color:#d1d5db">—</span>'}</td>
+      <td style="font-size:11px;max-width:200px">${p.form==='N/A' ? '<span style="color:#9ca3af;font-style:italic">N/A</span>' : p.form || '<span style="color:#d1d5db">—</span>'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('poaRowCount').textContent = `Showing ${filtered.length} of ${poaData.length} agencies`;
+}
+
+function searchPoaTable(val){
+  poaSearch = val;
+  renderPoaTable();
+}
+
+renderPoaTable();
+
+// ─── SOURCES & REFERENCES ──────────────────────────────────────────────────────
+const sources = [
+  {title:"Agency Atlas Data Source", url:"https://docs.google.com/spreadsheets/d/1yZ-0WEomPS5TjLL-d312aRxyIMXk2cHS8tej9TNHvak/edit", note:"Primary data source for this dashboard"},
+  {title:"8655 Tracker", url:"https://docs.google.com/spreadsheets/d/1rIoqdS3P2eeNCrT_ir7ezRaUDlqsGFNRvP1fRHFxOLo/edit?gid=0#gid=0", note:""},
+  {title:"NEW One-Stop Agency Automations Chart [Living Doc]", url:"https://docs.google.com/spreadsheets/d/1zjdNfpOtoHNvxQDqW6iyIhE516kng7UUmEupOY5nsAE/edit?gid=592078010#gid=592078010", note:""},
+  {title:"2025 Exchange Data", url:"https://docs.google.com/spreadsheets/d/1SrlpzcXI9xCNNHat9pF_UsapE9_XBZvq2OEmRlfCRs8/edit?pli=1&gid=1392312240#gid=1392312240", note:""},
+  {title:"2026 Exchange Data", url:"https://docs.google.com/spreadsheets/d/1nMMjAu-G85XdKP-KqTQ4B3Sq795nt2HOLJ4kXAUEDEg/edit?gid=1819118255#gid=1819118255", note:""},
+  {title:"Payroll Agreements, Approvals, Licenses, MOUs, testing requirements, etc", url:"https://docs.google.com/spreadsheets/d/1cxAe1XxeVIX_w7ApiNqg9SFCWiiOoqmZIXt8sJSgOes/edit?gid=690803509#gid=690803509", note:""},
+  {title:"Manual Data Exchanges Analysis ", url:"https://docs.google.com/spreadsheets/d/1uVDmRfESvAnq-ufHsC5LLvVulsWjHIk05Lxg2rSPBvs/edit?gid=0#gid=0", note:""},
+];
+
+function renderSources(){
+  const el = document.getElementById('sourcesList');
+  if(!sources.length){
+    el.innerHTML = '<p style="font-size:12px;color:var(--text-muted);font-style:italic;">No sources added yet.</p>';
+    return;
+  }
+  el.innerHTML = sources.map((s,i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--gray-light);border-radius:8px;border:1px solid var(--border);">
+      <span style="font-size:16px;flex-shrink:0;">📄</span>
+      <div style="flex:1;min-width:0;">
+        ${s.url
+          ? `<a href="${s.url}" target="_blank" style="font-size:13px;font-weight:600;color:var(--green);text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${s.title}</a>`
+          : `<span style="font-size:13px;font-weight:600;color:var(--text)">${s.title}</span>`
+        }
+        ${s.note ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">${s.note}</div>` : ''}
+      </div>
+      <button onclick="removeSource(${i})" style="background:none;border:none;cursor:pointer;color:#d1d5db;font-size:14px;padding:2px 4px;border-radius:4px;flex-shrink:0;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#d1d5db'" title="Remove">✕</button>
+    </div>`).join('');
+}
+
+function addSource(){
+  const title = document.getElementById('newSourceTitle').value.trim();
+  const url   = document.getElementById('newSourceUrl').value.trim();
+  const note  = document.getElementById('newSourceNote').value.trim();
+  if(!title){ document.getElementById('newSourceTitle').focus(); return; }
+  sources.push({title, url, note});
+  document.getElementById('newSourceTitle').value = '';
+  document.getElementById('newSourceUrl').value   = '';
+  document.getElementById('newSourceNote').value  = '';
+  renderSources();
+}
+
+function removeSource(i){
+  sources.splice(i,1);
+  renderSources();
+}
+
+['newSourceTitle','newSourceUrl','newSourceNote'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') addSource(); });
+});
+
+renderSources();
+
+// ─── GOOGLE SHEETS SYNC ────────────────────────────────────────────────────────
+const SHEET_ID = '1yZ-0WEomPS5TjLL-d312aRxyIMXk2cHS8tej9TNHvak';
+const SHEET_GIDS = {
+  agencies: '0',
+  poa:      '1675780835',
+  avgDays:  '1124402050',
+  cadence:  '1617393932',
+};
+
+function parseCSV(text) {
+  const rows = [];
+  let cur = '', inQ = false, row = [];
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === '"') { if (inQ && text[i+1]==='"'){cur+='"';i++;} else inQ=!inQ; }
+    else if (c === ',' && !inQ) { row.push(cur); cur=''; }
+    else if ((c==='\n'||c==='\r') && !inQ) {
+      if (c==='\r'&&text[i+1]==='\n') i++;
+      row.push(cur); cur='';
+      if (row.some(v=>v!=='')) rows.push(row);
+      row=[];
+    } else cur+=c;
+  }
+  if (cur||row.length) { row.push(cur); if (row.some(v=>v!=='')) rows.push(row); }
+  return rows;
+}
+
+function parseBool(v){ return v==='TRUE'?true : v==='FALSE'?false : v; }
+function parseNum(v){
+  if(v===''||v===undefined||v===null) return null;
+  if(v==='TBD'||v==='N/A') return v;
+  const n=parseFloat(v); return isNaN(n)?v:n;
+}
+
+function setSyncBtn(text, bg, color, disabled){
+  const b=document.getElementById('syncBtn');
+  b.textContent=text; b.disabled=!!disabled;
+  b.style.background=bg||''; b.style.color=color||''; b.style.borderColor=bg?color:'';
+}
+
+// ─── DARK MODE ────────────────────────────────────────────────────────────────
+function applyDark(dark){
+  document.body.classList.toggle('dark', dark);
+  document.getElementById('darkToggle').textContent = dark ? '☀️' : '🌙';
+  document.getElementById('darkToggle').title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  const textColor  = dark ? '#94a3b8' : '#6b7280';
+  const gridColor  = dark ? '#2d3f55' : '#f3f4f6';
+  const cardBg     = dark ? '#1e293b' : '#ffffff';
+  Chart.defaults.color = textColor;
+  if(typeof authProcessChart !== 'undefined' && authProcessChart){
+    authProcessChart.options.scales.x.grid.color = gridColor;
+    authProcessChart.options.scales.x.ticks.color = textColor;
+    authProcessChart.options.scales.y.ticks.color = textColor;
+    authProcessChart.update('none');
+  }
+  if(typeof exchangeMethodChart !== 'undefined' && exchangeMethodChart){
+    exchangeMethodChart.data.datasets[0].borderColor = cardBg;
+    exchangeMethodChart.options.plugins.legend.labels.color = textColor;
+    exchangeMethodChart.update('none');
+  }
+  try { localStorage.setItem('agencyAtlasDark', dark ? '1' : '0'); } catch(e){}
+}
+function toggleDark(){
+  applyDark(!document.body.classList.contains('dark'));
+}
+// Restore preference on load
+(function(){
+  try { if(localStorage.getItem('agencyAtlasDark')==='1') applyDark(true); } catch(e){}
+})();
+
+async function syncFromSheet(){
+  setSyncBtn('⏳ Syncing…','#f3f4f6','#6b7280',true);
+  const base=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=`;
+  try {
+    const [agCSV,poaCSV,avgCSV,cadCSV] = await Promise.all([
+      fetch(base+SHEET_GIDS.agencies,{credentials:'include'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.text();}),
+      fetch(base+SHEET_GIDS.poa,    {credentials:'include'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.text();}),
+      fetch(base+SHEET_GIDS.avgDays,{credentials:'include'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.text();}),
+      fetch(base+SHEET_GIDS.cadence,{credentials:'include'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.text();}),
+    ]);
+
+    // — Agencies —
+    agencies.length=0;
+    for(const r of parseCSV(agCSV).slice(1)){
+      if(!r[0]) continue;
+      agencies.push({
+        name:r[0], sysCode:r[1], agency:r[2], desc:r[3],
+        taxType:r[4], portal:r[5], exchange:r[6], authProcess:r[7], exchangeMethod:r[8],
+        rateExch:r[9]==='TRUE', einExch:r[10]==='TRUE', dsExch:r[11]==='TRUE',
+        complexity: r[12]===''||r[12]===undefined ? null : parseFloat(r[12]),
+      });
+    }
+
+    // — Avg Days —
+    for(const k in avgDaysMap) delete avgDaysMap[k];
+    for(const k in avgDays2026Map) delete avgDays2026Map[k];
+    for(const r of parseCSV(avgCSV).slice(1)){
+      if(!r[0]) continue;
+      if(r[1]!=='') avgDaysMap[r[0]] = parseNum(r[1]);
+      if(r[2]!=='') avgDays2026Map[r[0]] = parseNum(r[2]);
+    }
+
+    // — Cadence —
+    for(const k in cadenceMap) delete cadenceMap[k];
+    for(const r of parseCSV(cadCSV).slice(1)){
+      if(!r[0]||!r[1]) continue;
+      cadenceMap[r[0]] = r[1].includes(',') ? r[1].split(',').map(s=>s.trim()) : r[1];
+    }
+
+    // — POA —
+    poaData.length=0;
+    for(const r of parseCSV(poaCSV).slice(1)){
+      if(!r[0]) continue;
+      const entry={
+        name:r[0], sysCode:r[1], desc:r[2],
+        sig:r[3], trans:r[4],
+        notary:parseBool(r[5]), mou:parseBool(r[6]), inapp:parseBool(r[7]),
+        pf:r[8]==='TRUE',
+        accepts8655:r[12]==='TRUE',
+        use:r[10], form:r[11],
+      };
+      if(r[9]==='TRUE') entry.agencyCall=true;
+      else if(r[9]==='FALSE') entry.agencyCall=false;
+      poaData.push(entry);
+    }
+
+    renderTable();
+    renderPoaTable();
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const dateStr = now.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+    setSyncBtn(`✓ Synced at ${timeStr}`,'#dcfce7','#166534',false);
+    document.getElementById('lastSynced').textContent = `Last synced: ${dateStr} at ${timeStr}`;
+    document.getElementById('lastSynced').style.color = '#16a34a';
+    setTimeout(()=>setSyncBtn('🔄 Sync from Sheet','','',false), 4000);
+
+  } catch(e) {
+    console.error('Sync failed:',e);
+    setSyncBtn('⚠️ Sync failed','#fee2e2','#991b1b',false);
+    setTimeout(()=>setSyncBtn('🔄 Sync from Sheet','','',false), 5000);
+    const msg = e.message==='Failed to fetch'
+      ? 'Could not reach Google Sheets — this usually means the sheet needs to be shared with "Anyone with the link can view."\n\nAlternatively, ask Claude to sync the dashboard from the sheet.'
+      : `Sync error (${e.message}). Make sure the sheet is shared, then try again.`;
+    alert(msg);
+  }
+}
+
+// ─── CORRECTION REQUESTS ──────────────────────────────────────────────────────
+(function populateCrAgency(){
+  const sel = document.getElementById('crAgency');
+  // Build a sorted unique list of agency names from all three datasets
+  const names = new Set();
+  agencies.forEach(a => names.add(a.name));
+  poaData.forEach(p => names.add(p.name));
+  [...names].sort().forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = n; opt.textContent = n;
+    sel.appendChild(opt);
+  });
+  // Add an "Other / General" option at the end
+  const other = document.createElement('option');
+  other.value = 'Other / General'; other.textContent = 'Other / General';
+  sel.appendChild(other);
+})();
+
+const correctionLog = [];
+
+function submitCorrection(){
+  const agency     = document.getElementById('crAgency').value.trim();
+  const section    = document.getElementById('crSection').value.trim();
+  const field      = document.getElementById('crField').value.trim();
+  const suggested  = document.getElementById('crSuggested').value.trim();
+  const current    = document.getElementById('crCurrent').value.trim();
+  const name       = document.getElementById('crName').value.trim();
+  const notes      = document.getElementById('crNotes').value.trim();
+
+  // Validate required fields
+  if(!agency || !section || !field || !suggested){
+    ['crAgency','crSection','crField','crSuggested'].forEach(id => {
+      const el = document.getElementById(id);
+      if(!el.value.trim()){ el.style.borderColor='#ef4444'; setTimeout(()=>el.style.borderColor='var(--border)',2000); }
+    });
+    return;
+  }
+
+  const submittedAt = new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  // Build pre-filled Google Form URL
+  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfhz8cv606rXlcqvW1qzU4gX6oRhU8FCg-JS9Nqbm6nlEWS8w/viewform';
+  const params = new URLSearchParams({
+    'entry.369417145': agency,
+    'entry.29084988':  section,
+    'entry.816384669': field,
+    'entry.1437042325': current,
+    'entry.578658731': suggested,
+    'entry.151659821': name,
+    'entry.1707470755': notes,
+  });
+  window.open(`${FORM_URL}?${params.toString()}`, '_blank');
+
+  // Add to in-page log
+  correctionLog.unshift({agency, section, field, current, suggested, name, notes, submittedAt});
+  renderCorrectionLog();
+  clearCorrectionForm();
+
+  const status = document.getElementById('crStatus');
+  status.textContent = '✓ Form opened in new tab — review and hit Submit!';
+  status.style.display = 'inline';
+  setTimeout(() => status.style.display = 'none', 5000);
+}
+
+function renderCorrectionLog(){
+  const log = document.getElementById('crLog');
+  const list = document.getElementById('crLogList');
+  if(!correctionLog.length){ log.style.display='none'; return; }
+  log.style.display = 'block';
+  list.innerHTML = correctionLog.map(c => `
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:grid;grid-template-columns:auto auto 1fr auto;gap:6px 18px;align-items:baseline;">
+      <span style="font-size:12px;font-weight:700;color:var(--text)">${c.agency}</span>
+      <span style="font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;padding:1px 8px;border-radius:100px;">${c.section}</span>
+      <span style="font-size:12px;color:var(--text-muted);">
+        <strong style="color:var(--text)">${c.field}</strong>
+        ${c.current ? `<span style="color:#9ca3af"> · was: <em>${c.current}</em></span>` : ''}
+        <span style="color:var(--green)"> → ${c.suggested}</span>
+        ${c.notes ? `<span style="color:#9ca3af;font-size:11px;display:block;margin-top:2px">${c.notes}</span>` : ''}
+      </span>
+      <span style="font-size:10px;color:#9ca3af;white-space:nowrap;">${c.submittedAt}${c.name?' · '+c.name:''}</span>
+    </div>`).join('');
+}
+
+function clearCorrectionForm(){
+  ['crAgency','crSection','crField','crCurrent','crSuggested','crName','crNotes'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) { el.tagName==='SELECT' ? el.value='' : el.value=''; }
+  });
+  document.getElementById('crNotes').value = '';
+}
+</script>
+</body>
+</html>
