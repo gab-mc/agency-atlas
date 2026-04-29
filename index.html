@@ -118,6 +118,24 @@
   td.auth-cell{text-align:center;padding:9px 6px;}
   th.auth-th{text-align:center;}
 
+  /* ─── CHANGELOG ─── */
+  .cl-entry{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);}
+  .cl-entry:last-child{border-bottom:none;}
+  .cl-date{font-size:11px;font-weight:700;color:var(--text-muted);white-space:nowrap;min-width:88px;padding-top:2px;}
+  .cl-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+  .cl-data{background:#dcfce7;color:#166534;}
+  .cl-feature{background:#dbeafe;color:#1e40af;}
+  .cl-fix{background:#fef3c7;color:#92400e;}
+  .cl-structure{background:#ede9fe;color:#5b21b6;}
+  .cl-body{flex:1;}
+  .cl-desc{font-size:13px;color:var(--text);line-height:1.5;}
+  .cl-agencies{font-size:11px;color:var(--text-muted);margin-top:3px;}
+  .cl-header-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .cl-add-form{background:var(--gray-light);border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;flex-direction:column;gap:10px;}
+  .cl-add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .cl-input{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;outline:none;background:var(--white);color:var(--text);}
+  .cl-input:focus{border-color:#0f766e;}
+
   /* ─── DARK MODE ─── */
   body.dark {
     --bg: #0f172a; --white: #1e293b; --gray-light: #162032;
@@ -191,6 +209,8 @@
     <a href="#anchor-sources" style="font-size:13px;font-weight:600;color:#0369a1;text-decoration:none;background:#e0f2fe;border:1px solid #7dd3fc;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#0369a1';this.style.color='white'" onmouseout="this.style.background='#e0f2fe';this.style.color='#0369a1'">Sources &amp; References</a>
     <span style="color:var(--border);font-size:16px;">›</span>
     <a href="#anchor-corrections" style="font-size:13px;font-weight:600;color:#b45309;text-decoration:none;background:#fef3c7;border:1px solid #fde68a;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#b45309';this.style.color='white'" onmouseout="this.style.background='#fef3c7';this.style.color='#b45309'">Submit a Correction</a>
+    <span style="color:var(--border);font-size:16px;">›</span>
+    <a href="#anchor-changelog" style="font-size:13px;font-weight:600;color:#0f766e;text-decoration:none;background:#ccfbf1;border:1px solid #5eead4;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#0f766e';this.style.color='white'" onmouseout="this.style.background='#ccfbf1';this.style.color='#0f766e'">Changelog</a>
   </div>
 
   <div id="anchor-exchanges" class="section-title">
@@ -441,6 +461,18 @@
     <div id="crLog" style="margin-top:16px;display:none;">
       <h4 style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em;">Requests submitted this session</h4>
       <div id="crLogList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+  <div id="anchor-changelog" class="section-title">
+    <span class="section-title-text">Changelog</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionChangelog')">▼ Expand</button>
+  </div>
+  <div id="sectionChangelog" style="display:none;">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;">A running log of updates, corrections, and new features added to this dashboard. Most recent changes appear first.</p>
+      <div id="changelogList"></div>
     </div>
   </div>
 </main>
@@ -999,7 +1031,7 @@ const authData = [
   {name:"WA LNI",  agency:"Washington Dept. of Labor & Industries",      taxType:"WC",authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"WA SUI",  agency:"Washington Employment Security Dept.",        taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"WA PFML", agency:"Washington Employment Security Dept. (PFML)", taxType:"PFML",         authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
-  {name:"WV SIT",  agency:"West Virginia State Tax Department",          taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"WV SIT",  agency:"West Virginia State Tax Department",          taxType:"SIT",          authProcess:"Joint effort",           pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:false},
   {name:"WV SUI",  agency:"WorkForce West Virginia",                     taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
   {name:"WI SIT",  agency:"Wisconsin Department of Revenue",             taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"WI SUI",  agency:"Wisconsin Dept. of Workforce Development",    taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
@@ -1294,6 +1326,54 @@ function searchPoaTable(val){
 
 renderPoaTable();
 
+// ─── CHANGELOG ─────────────────────────────────────────────────────────────────
+// To add entries: add an object to the TOP of this array (most recent first).
+// Types: "data" | "feature" | "fix" | "structure"
+const changelogData = [
+  {date:"2026-04-29", type:"data",      desc:"NV MBT: updated agency name to Nevada Department of Taxation, description to Nevada - Modified Business Tax, Exchange set to YES, method updated to Email exchange.",  agencies:"NV MBT"},
+  {date:"2026-04-29", type:"data",      desc:"FL SUI POA: In-App column updated to Yes.",                                                                                                                           agencies:"FL SUI"},
+  {date:"2026-04-29", type:"data",      desc:"WV SIT Authorization: Pay and File columns updated to Yes.",                                                                                                          agencies:"WV SIT"},
+  {date:"2026-04-07", type:"feature",   desc:"Added dark mode toggle, click-to-sort on all columns, sticky first column, row hover highlights, and last-synced timestamp to sync button.",                         agencies:""},
+  {date:"2026-04-07", type:"feature",   desc:"Built Correction Request form wired to Google Form (pre-fills all 7 fields via URL params). Updated Sources & References titles to match actual document names.",     agencies:""},
+  {date:"2026-04-07", type:"data",      desc:"Updated POA Requirements data for 20+ agencies covering transmission methods, signature types, notary, MOU, in-app fields, and form names.",                          agencies:"NC SIT, WI SUI, WA SUI, WA LNI/WC, VA SIT, VA SUI, UT SUI, UT SIT, TN SUI, OR SIT/SUI, OK SIT, NY SUI, NE SIT, MO SUI/SIT, MN SUI, IN SUI, CO PFML, AR SUI, IL SUI, LA SUI"},
+  {date:"2026-04-03", type:"structure", desc:"Renamed dashboard to Compliance Operations Agency Atlas. Added creator/contact subtext to header.",                                                                    agencies:""},
+  {date:"2026-04-03", type:"data",      desc:"Populated POA Requirements table from Google Sheet data across 100 agencies. Added colorful badges for Signature, Transmission, and Exchange Method columns.",        agencies:""},
+  {date:"2026-04-03", type:"feature",   desc:"Added sticky frozen header rows and sticky first column to all three tables.",                                                                                        agencies:""},
+  {date:"2026-04-02", type:"feature",   desc:"Initial dashboard build. Three sections: Agency Data Exchanges, Authorization Requirements, POA Requirements. KPI cards, pie chart, filter/search, jump-to nav.",    agencies:""},
+];
+
+const clTypeLabels = {data:"Data update", feature:"New feature", fix:"Fix", structure:"Structure"};
+const clTypeCss    = {data:"cl-data",     feature:"cl-feature",  fix:"cl-fix", structure:"cl-structure"};
+
+function renderChangelog(){
+  const el = document.getElementById('changelogList');
+  if(!changelogData.length){ el.innerHTML='<p style="font-size:12px;color:var(--text-muted);">No entries yet.</p>'; return; }
+  el.innerHTML = changelogData.map(e => {
+    const d = e.date ? new Date(e.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    return `<div class="cl-entry">
+      <div class="cl-date">${d}</div>
+      <div class="cl-body">
+        <div class="cl-header-row"><span class="cl-badge ${clTypeCss[e.type]||'cl-data'}">${clTypeLabels[e.type]||e.type}</span></div>
+        <div class="cl-desc">${e.desc}</div>
+        ${e.agencies ? `<div class="cl-agencies">Agencies: ${e.agencies}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addChangelogEntry(){
+  const date     = document.getElementById('clDate').value;
+  const type     = document.getElementById('clType').value;
+  const desc     = document.getElementById('clDesc').value.trim();
+  const agencies = document.getElementById('clAgencies').value.trim();
+  if(!desc){ alert('Please enter a description.'); return; }
+  changelogData.unshift({date, type, desc, agencies});
+  renderChangelog();
+  document.getElementById('clDate').value = '';
+  document.getElementById('clDesc').value = '';
+  document.getElementById('clAgencies').value = '';
+}
+
 // ─── SOURCES & REFERENCES ──────────────────────────────────────────────────────
 const sources = [
   {title:"Agency Atlas Data Source", url:"https://docs.google.com/spreadsheets/d/1yZ-0WEomPS5TjLL-d312aRxyIMXk2cHS8tej9TNHvak/edit", note:"Primary data source for this dashboard"},
@@ -1347,6 +1427,8 @@ function removeSource(i){
 });
 
 renderSources();
+renderChangelog();
+document.getElementById('clDate').value = new Date().toISOString().split('T')[0];
 
 // ─── GOOGLE SHEETS SYNC ────────────────────────────────────────────────────────
 const SHEET_ID = '1yZ-0WEomPS5TjLL-d312aRxyIMXk2cHS8tej9TNHvak';
