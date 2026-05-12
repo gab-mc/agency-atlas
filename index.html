@@ -378,15 +378,9 @@
   </div>
   <div id="sectionSources">
     <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sources used in building and maintaining this dashboard. Click any link to open, or add new entries below.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sources used in building and maintaining this dashboard. Click any link to open.</p>
       <div id="sourcesList" style="display:flex;flex-direction:column;gap:10px;">
         <!-- sources rendered here by JS -->
-      </div>
-      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <input id="newSourceTitle" type="text" placeholder="Source name…" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;width:240px;outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
-        <input id="newSourceUrl" type="text" placeholder="URL (optional)…" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;width:300px;outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
-        <input id="newSourceNote" type="text" placeholder="Note (optional)…" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;width:220px;outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
-        <button onclick="addSource()" style="padding:7px 16px;background:var(--green);color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">+ Add</button>
       </div>
     </div>
   </div>
@@ -494,7 +488,7 @@ const agencies = [
   // COLORADO
   {name:"CO SIT", sysCode:"CO - CDOR", agency:"Colorado Department of Revenue", desc:"Colorado - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   {name:"CO SUI", sysCode:"CO - CLDE", agency:"Colorado State Treasurer / CO Dept. of Labor", desc:"Colorado - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:3},
-  {name:"CO PFML", sysCode:"CO - CLDE", agency:"CO - Family and Medical Leave Insurance", desc:"Colorado - FAMLI/PFML", taxType:"PFML", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"CO FAMLI", sysCode:"CO - CLDE", agency:"CO - Family and Medical Leave Insurance", desc:"Colorado - FAMLI/PFML", taxType:"PFML", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   {name:"CO Denver OPT", sysCode:"CO - Denver", agency:"Denver Dept. of Finance", desc:"Denver - Occupational Privilege Tax", taxType:"OPT", portal:"", exchange:"", authProcess:"", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   // CONNECTICUT
   {name:"CT SIT", sysCode:"CT - DRS", agency:"Commissioner of Revenue Services", desc:"Connecticut - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:true, dsExch:true, complexity:3},
@@ -943,7 +937,7 @@ const authData = [
   {name:"CA SIT/SUI", agency:"CA-EDD",                                   taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"CO SIT",  agency:"Colorado Department of Revenue",              taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"CO SUI",  agency:"Colorado State Treasurer / CO Dept. of Labor",taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:true},
-  {name:"CO PFML", agency:"Colorado - FAMLI",                            taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"CO FAMLI", agency:"Colorado - FAMLI",                            taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"CT SIT",  agency:"Commissioner of Revenue Services",            taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"CT SUI",  agency:"Connecticut Dept. of Labor",                  taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"CT PFML", agency:"Connecticut Paid Leave Authority",            taxType:"PFML",         authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
@@ -1145,7 +1139,7 @@ const poaData = [
   {name:"CA SIT/SUI", sysCode:"06-000-0000-SIT-000", desc:"California - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
   {name:"CO SIT", sysCode:"08-000-0000-SIT-000", desc:"Colorado - Employee Withholding", form:"Form DR 0145", sig:"WET", trans:"MAIL/ELEC", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
   {name:"CO SUI", sysCode:"08-000-0000-ER_SUTA-000", desc:"Colorado - Employer Unemployment", form:"", sig:"WET", trans:"", notary:false, mou:false, inapp:false, use:""},
-  {name:"CO PFML", sysCode:"08-000-0000-FLI-000", desc:"Colorado - Family and Medical Leave Insurance", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
+  {name:"CO FAMLI", sysCode:"08-000-0000-FLI-000", desc:"Colorado - Family and Medical Leave Insurance", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
   {name:"CT SIT", sysCode:"09-000-0000-SIT-000", desc:"Connecticut - Employee Withholding", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
   {name:"CT SUI", sysCode:"09-000-0000-ER_SUTA-000", desc:"Connecticut - Employer Unemployment", form:"", sig:"LIKELY WET", trans:"ELEC", notary:false, mou:false, inapp:false, use:"Speak w/ agency if TPA not on file", accepts8655:true},
   {name:"CT PFML", sysCode:"09-000-0000-FLI-000", desc:"Connecticut - Paid Family and Medical Leave Insurance", form:"N/A", sig:"No requirements", trans:"N/A", notary:"N/A", mou:"N/A", inapp:"N/A", use:"N/A"},
@@ -1401,26 +1395,10 @@ function renderSources(){
     </div>`).join('');
 }
 
-function addSource(){
-  const title = document.getElementById('newSourceTitle').value.trim();
-  const url   = document.getElementById('newSourceUrl').value.trim();
-  const note  = document.getElementById('newSourceNote').value.trim();
-  if(!title){ document.getElementById('newSourceTitle').focus(); return; }
-  sources.push({title, url, note});
-  document.getElementById('newSourceTitle').value = '';
-  document.getElementById('newSourceUrl').value   = '';
-  document.getElementById('newSourceNote').value  = '';
-  renderSources();
-}
-
 function removeSource(i){
   sources.splice(i,1);
   renderSources();
 }
-
-['newSourceTitle','newSourceUrl','newSourceNote'].forEach(id => {
-  document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') addSource(); });
-});
 
 renderSources();
 renderChangelog();
