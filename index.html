@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Compliance Operations Agency Atlas — Gusto TaxRes</title>
+<title>Agency Atlas — Gusto Internal</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
   :root {
-    --green:#2f9e5e; --green-light:#e8f7ef; --green-mid:#5ab883;
-    --orange:#f5a623; --blue:#4a7fc1; --purple:#8b5cf6;
+    --green:#0A8080; --green-light:#E0F2F5; --green-mid:#8DD3D4;
+    --orange:#F45D48; --blue:#4a7fc1; --purple:#8b5cf6;
     --rate-bg:#dbeafe; --rate-text:#1d4ed8;
     --ein-bg:#ede9fe;  --ein-text:#6d28d9;
-    --dep-bg:#d1fae5;  --dep-text:#065f46;
+    --dep-bg:#E0F2F5;  --dep-text:#005961;
     --gray-light:#f3f4f6; --border:#e5e7eb; --text:#111827;
     --text-muted:#6b7280; --bg:#f9fafb; --white:#ffffff;
     --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);
@@ -19,8 +19,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
 
-  header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;gap:16px;}
-  header .logo{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;flex-shrink:0;}
+  header{background:#F3FAFB;border-bottom:3px solid var(--green);padding:16px 32px;display:flex;align-items:center;gap:16px;}
   header h1{font-size:18px;font-weight:700;}
   header p{font-size:12px;color:var(--text-muted);margin-top:1px;}
   header .badge{margin-left:auto;background:var(--green-light);color:var(--green);font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;border:1px solid var(--green-mid);white-space:nowrap;}
@@ -69,24 +68,24 @@
   th{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;padding:10px 11px;text-align:left;background:var(--gray-light);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:2;}
   td{padding:9px 11px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle;}
   tr:last-child td{border-bottom:none;}
-  tr:hover td{background:#f0fdf4;}
-  tr:hover td:first-child{background:#f0fdf4;}
+  tr:hover td{background:#E0F2F5;}
+  tr:hover td:first-child{background:#E0F2F5;}
   /* Sticky first column */
   td:first-child{position:sticky;left:0;z-index:1;background:var(--white);box-shadow:2px 0 4px -1px rgba(0,0,0,.06);}
   th:first-child{position:sticky;left:0;z-index:4;background:var(--gray-light);box-shadow:2px 0 4px -1px rgba(0,0,0,.06);}
 
   .tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;}
-  .tag-SIT{background:#dbeafe;color:#1e40af;} .tag-SUI{background:#dcfce7;color:#166534;}
+  .tag-SIT{background:#dbeafe;color:#1e40af;} .tag-SUI{background:#E0F2F5;color:#005961;}
   .tag-PFML{background:#ede9fe;color:#5b21b6;} .tag-MBT{background:#fef3c7;color:#92400e;}
-  .tag-WC,.tag-WorkersComp{background:#fee2e2;color:#991b1b;} .tag-OPT{background:#fce7f3;color:#9d174d;}
+  .tag-WC,.tag-WorkersComp{background:#FAC6B9;color:#7a1e0e;} .tag-OPT{background:#fce7f3;color:#9d174d;}
   .tag-Local{background:#fff7ed;color:#c2410c;} .tag-Other{background:#f1f5f9;color:#475569;}
 
   .dot-ind{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;}
   .dot-yes{background:var(--green);} .dot-no{background:#e5e7eb;} .dot-other{background:var(--orange);}
 
   .proc-tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap;}
-  .proc-poa{background:#fee2e2;color:#991b1b;} .proc-customer{background:#dbeafe;color:#1e40af;}
-  .proc-gusto{background:#dcfce7;color:#166534;} .proc-gusto-info{background:#d1fae5;color:#065f46;}
+  .proc-poa{background:#FAC6B9;color:#7a1e0e;} .proc-customer{background:#dbeafe;color:#1e40af;}
+  .proc-gusto{background:#E0F2F5;color:#005961;} .proc-gusto-info{background:#8DD3D4;color:#005961;}
   .proc-joint{background:#fef3c7;color:#92400e;} .proc-other{background:#f1f5f9;color:#475569;}
 
   .exlabel{display:inline-block;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap;margin:1px 1px 1px 0;}
@@ -113,7 +112,7 @@
   .section-title-text{padding-bottom:12px;border-bottom:3px solid var(--green);}
   .section-collapse-btn{font-size:12px;font-weight:600;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;margin-bottom:10px;}
   .section-collapse-btn:hover{border-color:var(--green);color:var(--green);}
-  .auth-yes{color:#16a34a;font-weight:800;font-size:15px;}
+  .auth-yes{color:#0A8080;font-weight:800;font-size:15px;}
   .auth-no{color:#e5e7eb;font-size:12px;}
   td.auth-cell{text-align:center;padding:9px 6px;}
   th.auth-th{text-align:center;}
@@ -123,7 +122,7 @@
   .cl-entry:last-child{border-bottom:none;}
   .cl-date{font-size:11px;font-weight:700;color:var(--text-muted);white-space:nowrap;min-width:88px;padding-top:2px;}
   .cl-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
-  .cl-data{background:#dcfce7;color:#166534;}
+  .cl-data{background:#E0F2F5;color:#005961;}
   .cl-feature{background:#dbeafe;color:#1e40af;}
   .cl-fix{background:#fef3c7;color:#92400e;}
   .cl-structure{background:#ede9fe;color:#5b21b6;}
@@ -135,6 +134,26 @@
   .cl-add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .cl-input{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;outline:none;background:var(--white);color:var(--text);}
   .cl-input:focus{border-color:#0f766e;}
+
+  /* ─── AGENCY PROFILE PANEL ─── */
+  #panelOverlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s;}
+  #panelOverlay.open{opacity:1;pointer-events:all;}
+  #agencyPanel{position:fixed;top:0;right:0;height:100%;width:520px;max-width:95vw;background:var(--white);box-shadow:-4px 0 24px rgba(0,0,0,.14);z-index:101;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;}
+  #agencyPanel.open{transform:translateX(0);}
+  .panel-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;position:sticky;top:0;background:var(--white);z-index:2;}
+  .panel-close{margin-left:auto;flex-shrink:0;background:none;border:1px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;}
+  .panel-close:hover{border-color:var(--green);color:var(--green);}
+  .panel-body{padding:20px 24px;flex:1;}
+  .panel-section{margin-bottom:20px;}
+  .panel-section-title{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid;}
+  .panel-section-title.exc{color:var(--green);border-color:var(--green-mid);}
+  .panel-section-title.auth{color:var(--blue);border-color:#93c5fd;}
+  .panel-section-title.poa{color:#7c3aed;border-color:#c4b5fd;}
+  .panel-row{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;}
+  .panel-row:last-child{border-bottom:none;}
+  .panel-key{color:var(--text-muted);width:160px;flex-shrink:0;}
+  .panel-val{color:var(--text);flex:1;}
+  .panel-none{font-size:12px;color:var(--text-muted);font-style:italic;padding:8px 0;}
 
   /* ─── DARK MODE ─── */
   body.dark {
@@ -174,14 +193,31 @@
 <body>
 
 <header>
-  <div class="logo">G</div>
   <div>
-    <h1>Compliance Operations Agency Atlas</h1>
-    <p>Created &amp; maintained by Gabriella McIntyre &nbsp;·&nbsp; Questions? Slack <strong>@gab</strong></p>
+    <h1>Gusto Agency Atlas</h1>
+    <p style="margin-bottom:2px;">A centralized reference for state &amp; local tax agency research, authorization requirements, and POA processes.</p>
+    <p>Created &amp; maintained by Compliance Operations &nbsp;·&nbsp; Questions? Slack <strong>@gab</strong></p>
   </div>
   <div class="badge" id="headerBadge">— Agencies · Updated May 2026</div>
   <button id="darkToggle" onclick="toggleDark()" title="Toggle dark mode" style="font-size:16px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;line-height:1;transition:all .15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🌙</button>
 </header>
+
+<!-- ── Agency Profile Panel ───────────────────────────────────────── -->
+<div id="agencyModal" onclick="if(event.target===this)closePanel()"
+     style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(0,0,0,0.4);justify-content:flex-end;">
+  <div id="agencyModalInner" style="width:520px;max-width:95%;height:100%;background:var(--white);overflow-y:auto;box-shadow:-4px 0 20px rgba(0,0,0,0.15);display:flex;flex-direction:column;">
+    <div id="agencyModalHeader" style="padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;position:sticky;top:0;background:var(--white);z-index:2;">
+      <div style="flex:1;min-width:0;">
+        <div id="panelAgencyName" style="font-size:17px;font-weight:800;line-height:1.2;margin-bottom:3px;color:#111827;"></div>
+        <div id="panelAgencyFull" style="font-size:12px;color:#6b7280;"></div>
+        <div id="panelAgencyType" style="margin-top:6px;"></div>
+      </div>
+      <button onclick="closePanel()" title="Close"
+              style="flex-shrink:0;background:none;border:1px solid #e5e7eb;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:15px;color:#6b7280;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <div id="panelBody" style="padding:20px 24px;flex:1;"></div>
+  </div>
+</div>
 
 <main>
   <div style="background:#fefce8;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:10px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px;">
@@ -194,19 +230,23 @@
 
   <div id="totalAgenciesKpi" class="kpi-card" style="margin-bottom:16px;display:none;"></div>
 
-  <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 20px;box-shadow:var(--shadow);margin-bottom:28px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-right:8px;">Jump to:</span>
-    <a href="#anchor-exchanges" style="font-size:13px;font-weight:600;color:var(--green);text-decoration:none;background:var(--green-light);border:1px solid var(--green-mid);padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='var(--green)';this.style.color='white'" onmouseout="this.style.background='var(--green-light)';this.style.color='var(--green)'">Agency Data Exchanges</a>
-    <span style="color:var(--border);font-size:16px;">›</span>
-    <a href="#anchor-auth" style="font-size:13px;font-weight:600;color:var(--blue);text-decoration:none;background:#dbeafe;border:1px solid #93c5fd;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='var(--blue)';this.style.color='white'" onmouseout="this.style.background='#dbeafe';this.style.color='var(--blue)'">Agency Authorization Requirements</a>
-    <span style="color:var(--border);font-size:16px;">›</span>
-    <a href="#anchor-poa" style="font-size:13px;font-weight:600;color:#7c3aed;text-decoration:none;background:#ede9fe;border:1px solid #c4b5fd;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#7c3aed';this.style.color='white'" onmouseout="this.style.background='#ede9fe';this.style.color='#7c3aed'">Agency POA Requirements</a>
-    <span style="color:var(--border);font-size:16px;">›</span>
-    <a href="#anchor-sources" style="font-size:13px;font-weight:600;color:#0369a1;text-decoration:none;background:#e0f2fe;border:1px solid #7dd3fc;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#0369a1';this.style.color='white'" onmouseout="this.style.background='#e0f2fe';this.style.color='#0369a1'">Sources &amp; References</a>
-    <span style="color:var(--border);font-size:16px;">›</span>
-    <a href="#anchor-corrections" style="font-size:13px;font-weight:600;color:#b45309;text-decoration:none;background:#fef3c7;border:1px solid #fde68a;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#b45309';this.style.color='white'" onmouseout="this.style.background='#fef3c7';this.style.color='#b45309'">Submit a Correction</a>
-    <span style="color:var(--border);font-size:16px;">›</span>
-    <a href="#anchor-changelog" style="font-size:13px;font-weight:600;color:#0f766e;text-decoration:none;background:#ccfbf1;border:1px solid #5eead4;padding:5px 14px;border-radius:100px;transition:all .15s;" onmouseover="this.style.background='#0f766e';this.style.color='white'" onmouseout="this.style.background='#ccfbf1';this.style.color='#0f766e'">Changelog</a>
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px 20px;box-shadow:var(--shadow);margin-bottom:28px;display:flex;align-items:center;gap:5px;flex-wrap:nowrap;">
+    <span style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-right:6px;white-space:nowrap;">Jump to:</span>
+    <a href="#anchor-exchanges" style="font-size:12px;font-weight:600;color:var(--green);text-decoration:none;background:var(--green-light);border:1px solid var(--green-mid);padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='var(--green)';this.style.color='white'" onmouseout="this.style.background='var(--green-light)';this.style.color='var(--green)'">Data Exchanges</a>
+    <span style="color:#F45D48;font-size:14px;">·</span>
+    <a href="#anchor-auth" style="font-size:12px;font-weight:600;color:var(--blue);text-decoration:none;background:#dbeafe;border:1px solid #93c5fd;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='var(--blue)';this.style.color='white'" onmouseout="this.style.background='#dbeafe';this.style.color='var(--blue)'">Authorization Requirements</a>
+    <span style="color:#F45D48;font-size:14px;">·</span>
+    <a href="#anchor-poa" style="font-size:12px;font-weight:600;color:#7c3aed;text-decoration:none;background:#ede9fe;border:1px solid #c4b5fd;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#7c3aed';this.style.color='white'" onmouseout="this.style.background='#ede9fe';this.style.color='#7c3aed'">POA Requirements</a>
+    <span style="color:#F45D48;font-size:14px;">·</span>
+    <a href="#anchor-glossary" style="font-size:12px;font-weight:600;color:#005961;text-decoration:none;background:#E0F2F5;border:1px solid #8DD3D4;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#005961';this.style.color='white'" onmouseout="this.style.background='#E0F2F5';this.style.color='#005961'">Legend &amp; Glossary</a>
+    <span style="color:#F45D48;font-size:14px;">·</span>
+    <a href="#anchor-corrections" style="font-size:12px;font-weight:600;color:#b45309;text-decoration:none;background:#fef3c7;border:1px solid #fde68a;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#b45309';this.style.color='white'" onmouseout="this.style.background='#fef3c7';this.style.color='#b45309'">Submit a Correction</a>
+    <span style="color:#F45D48;font-size:14px;">·</span>
+    <a href="#anchor-feedback" style="font-size:12px;font-weight:600;color:#be185d;text-decoration:none;background:#fce7f3;border:1px solid #f9a8d4;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#be185d';this.style.color='white'" onmouseout="this.style.background='#fce7f3';this.style.color='#be185d'">Leave Feedback</a>
+    <span style="color:#F45D48;font-size:14px;">·</span>
+    <a href="#anchor-changelog" style="font-size:12px;font-weight:600;color:#0f766e;text-decoration:none;background:#ccfbf1;border:1px solid #5eead4;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#0f766e';this.style.color='white'" onmouseout="this.style.background='#ccfbf1';this.style.color='#0f766e'">Changelog</a>
+    <span style="color:#F45D48;font-size:14px;">·</span>
+    <a href="#anchor-sources" style="font-size:12px;font-weight:600;color:#0369a1;text-decoration:none;background:#e0f2fe;border:1px solid #7dd3fc;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#0369a1';this.style.color='white'" onmouseout="this.style.background='#e0f2fe';this.style.color='#0369a1'">Sources &amp; References</a>
   </div>
 
   <div id="anchor-exchanges" class="section-title">
@@ -262,11 +302,11 @@
             <th class="sortable" onclick="toggleSort('agency','portal',this)">Portal</th>
             <th class="sortable" onclick="toggleSort('agency','exchange',this)">Exchange</th>
             <th class="sortable" onclick="toggleSort('agency','cadence',this)">Cadence</th>
-            <th class="sortable" onclick="toggleSort('agency','method',this)">Exchange Method</th>
-            <th>Exchange Types</th>
+            <th class="sortable" onclick="toggleSort('agency','method',this)">Method</th>
+            <th>Type(s)</th>
             <th class="sortable" onclick="toggleSort('agency','complexity',this)">Complexity</th>
-            <th class="sortable" onclick="toggleSort('agency','avg2025',this)">Avg. Days (2025)</th>
-            <th class="sortable" onclick="toggleSort('agency','avg2026',this)">Avg. Days (2026)</th>
+            <th class="sortable" onclick="toggleSort('agency','avg2025',this)">Turnaround (2025)</th>
+            <th class="sortable" onclick="toggleSort('agency','avg2026',this)">Turnaround (2026)</th>
           </tr>
         </thead>
         <tbody id="agencyTableBody"></tbody>
@@ -292,6 +332,9 @@
   </div>
   <div id="authBreakdownKpi" class="kpi-card" style="margin-bottom:16px;"></div>
 
+  <p style="font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:16px;">
+    This table shows <strong style="color:var(--text)">how Gusto obtains authorization</strong> at each agency (the Auth Process column — e.g. POA, customer self-serve, Gusto self-serve) and <strong style="color:var(--text)">what that authorization enables</strong> once granted. For example, authorization at MN SUI allows Gusto to pay and file on the employer's behalf — without it, neither action is possible. Each column (Pay, File, Amendments, etc.) indicates whether Gusto's current authorization covers that capability.
+  </p>
   <div class="table-card">
     <div class="table-header">
       <h3>Authorization by Action Type <button class="collapse-btn" onclick="toggleTable(this,'authTableWrap')">▲ Collapse</button></h3>
@@ -359,7 +402,7 @@
             <th class="auth-th sortable" onclick="toggleSort('poa','accepts8655',this)">Accepts 8655</th>
             <th class="auth-th sortable" onclick="toggleSort('poa','inapp',this)">In-App</th>
             <th class="auth-th sortable" onclick="toggleSort('poa','pf',this)">P&amp;F</th>
-            <th class="auth-th sortable" onclick="toggleSort('poa','agencyCall',this)" title="Agency Call required">Agency Call</th>
+            <th class="auth-th sortable" onclick="toggleSort('poa','agencyCall',this)">Agency Call</th>
             <th class="sortable" onclick="toggleSort('poa','use',this)">Gusto's Use</th>
             <th class="sortable" onclick="toggleSort('poa','form',this)">Form Name</th>
           </tr>
@@ -372,18 +415,86 @@
   </div><!-- end sectionPOA -->
 
   <hr class="section-divider">
-  <div id="anchor-sources" class="section-title">
-    <span class="section-title-text">Sources &amp; References</span>
-    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionSources')">▲ Collapse</button>
+  <div id="anchor-glossary" class="section-title">
+    <span class="section-title-text">Legend &amp; Glossary</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionGlossary')">▲ Collapse</button>
   </div>
-  <div id="sectionSources">
-    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sources used in building and maintaining this dashboard. Click any link to open.</p>
-      <div id="sourcesList" style="display:flex;flex-direction:column;gap:10px;">
-        <!-- sources rendered here by JS -->
-      </div>
+  <div id="sectionGlossary">
+    <p style="font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:20px;">Definitions for every column across all three tables. Use this as a reference if a field label isn't immediately clear.</p>
+
+    <!-- Agency Data Exchanges -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#005961;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #8DD3D4;">Agency Data Exchanges</div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr>
+          <th style="text-align:left;padding:8px 12px;background:var(--gray-light);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;width:180px;">Column</th>
+          <th style="text-align:left;padding:8px 12px;background:var(--gray-light);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;">Description</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Portal</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Yes/No — Indicates whether or not we have access to an online portal.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Exchange</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Yes/No — Indicates whether or not we have a data exchange process in place.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Cadence</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">How often the exchange is processed.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Method</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">The method we use to exchange data with the agency.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Type(s)</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">The data points we are able to obtain and use from the agency.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Complexity</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">The level of complexity based on file preparation process, potential for human error, and more. Determined by TaxOps.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Turnaround (2025)</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">The number of days it took TaxOps to complete the exchange from start to finish in 2025. If the exchange is processed more often than annually, this is an average.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Turnaround (2026)</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">The number of days it has taken TaxOps to complete the exchange from start to finish in 2026 (so far). If the exchange is processed more often than annually, this is an average.</td></tr>
+        </tbody>
+      </table>
     </div>
-  </div>
+
+    <!-- Agency Authorization Requirements -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#005961;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #8DD3D4;">Agency Authorization Requirements</div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr>
+          <th style="text-align:left;padding:8px 12px;background:var(--gray-light);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;width:180px;">Column</th>
+          <th style="text-align:left;padding:8px 12px;background:var(--gray-light);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;">Description</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Auth Process</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">
+            How Gusto obtains authorization at each agency. There are five process types:
+            <ul style="margin:8px 0 0 16px;line-height:1.8;">
+              <li><strong>Joint Effort</strong> — Both the customer and Gusto must participate. Most require Gusto to request access and the customer to subsequently approve.</li>
+              <li><strong>Customer self-serve</strong> — The customer can grant access without Gusto's involvement (e.g. adding Gusto as a TPA in their portal).</li>
+              <li><strong>Gusto self-serve</strong> — Gusto obtains access without any customer action.</li>
+              <li><strong>Gusto self-serve + INFO</strong> — Gusto must first collect a piece of information from the customer (e.g. a Letter ID or past payment amount), then can complete the process independently.</li>
+              <li><strong>POA-only</strong> — Authorization is only possible via a Power of Attorney form. Some are electronic; others require notarization and fax.</li>
+            </ul>
+          </td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Pay</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Required to pay taxes on behalf of the customer.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">File</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Required to file original returns on behalf of the customer.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Phone / Agency</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Required to discuss customer account information with the agency.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Portal / Bot</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Required to access the customer's account in the agency's portal. If TPA is required for portal access, it is also required to utilize bots to scrape account data.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Amendments</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Required to file amended returns.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Data Exchange</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Required to obtain information via data exchange.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Agency POA Requirements -->
+    <div style="margin-bottom:32px;">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#005961;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #8DD3D4;">Agency POA Requirements</div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr>
+          <th style="text-align:left;padding:8px 12px;background:var(--gray-light);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;width:180px;">Column</th>
+          <th style="text-align:left;padding:8px 12px;background:var(--gray-light);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;">Description</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Signature</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Signature method requirements, if any. Some agencies require wet signatures and will reject POA forms if electronically signed.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Transmission</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Methods of transmission acceptable to the agency. Some require wet-signed, notarized forms to be faxed; others accept portal uploads (electronic).</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Notary</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Yes/No — Indicates if a notary is required.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">MOU</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Yes/No — Indicates if Gusto is bound by an MOU to collect and maintain signed POA forms for the agency.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Accepts 8655</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Yes/No — Indicates if the agency accepts IRS Form 8655 in lieu of the agency-specific POA form.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">In-App</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Yes/No — Indicates if we present the form in-app to customers.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">P&amp;F</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Indicates if POA is required to pay and file.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Agency Call</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Indicates if POA is required to speak with the agency about customer accounts.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Gusto's Use</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Ways Gusto uses the POA form.</td></tr>
+          <tr><td style="padding:9px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">Form Name</td><td style="padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);">Agency-specific form name.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div><!-- end sectionGlossary -->
 
   <hr class="section-divider">
   <div id="anchor-corrections" class="section-title">
@@ -455,14 +566,56 @@
   </div>
 
   <hr class="section-divider">
+  <div id="anchor-feedback" class="section-title">
+    <span class="section-title-text">Leave Feedback</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionFeedback')">▲ Collapse</button>
+  </div>
+  <div id="sectionFeedback">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;">
+        Have a general comment, question, or suggestion about the Agency Atlas? Click <strong style="color:var(--text)">Send Feedback</strong> to open the feedback form in a new tab.
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Your Name (optional)</label>
+          <input id="fbName" type="text" placeholder="e.g. Alex T." style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+      </div>
+      <div style="margin-bottom:18px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Comments / Feedback <span style="color:#ef4444">*</span></label>
+        <textarea id="fbMessage" placeholder="Questions, suggestions, general comments…" rows="4" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--white);color:var(--text);outline:none;resize:vertical;font-family:inherit;" onfocus="this.style.borderColor='var(--green)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="submitFeedback()" style="padding:9px 22px;background:#be185d;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#9d174d'" onmouseout="this.style.background='#be185d'">💬 Send Feedback</button>
+        <button onclick="clearFeedbackForm()" style="padding:9px 16px;background:none;color:var(--text-muted);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">Clear</button>
+        <span id="fbStatus" style="font-size:12px;color:var(--green);display:none;font-weight:600;"></span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
   <div id="anchor-changelog" class="section-title">
     <span class="section-title-text">Changelog</span>
-    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionChangelog')">▼ Expand</button>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionChangelog')">▲ Collapse</button>
   </div>
-  <div id="sectionChangelog" style="display:none;">
+  <div id="sectionChangelog">
     <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
       <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;">A running log of updates, corrections, and new features added to this dashboard. Most recent changes appear first.</p>
       <div id="changelogList"></div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+  <div id="anchor-sources" class="section-title">
+    <span class="section-title-text">Sources &amp; References</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionSources')">▲ Collapse</button>
+  </div>
+  <div id="sectionSources">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sources used in building and maintaining this dashboard. Click any link to open.</p>
+      <div id="sourcesList" style="display:flex;flex-direction:column;gap:10px;">
+        <!-- sources rendered here by JS -->
+      </div>
     </div>
   </div>
 </main>
@@ -526,7 +679,7 @@ const agencies = [
   // KENTUCKY
   {name:"KY SIT", sysCode:"KY - DOR", agency:"Kentucky Department of Revenue", desc:"Kentucky - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Other", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:true, complexity:3},
   {name:"KY SUI", sysCode:"KY - OET", agency:"Kentucky Office of Unemployment Insurance / OET", desc:"Kentucky - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Email exchange", rateExch:true, einExch:false, dsExch:false, complexity:4},
-  {name:"Kenton County", sysCode:"", agency:"Kenton County Occupational Tax", desc:"Kentucky - Local Occupational Tax", taxType:"Local", portal:"", exchange:"YES", authProcess:"", exchangeMethod:"Email exchange", rateExch:false, einExch:false, dsExch:false, complexity:2},
+  {name:"KY Kenton County", sysCode:"", agency:"Kenton County Occupational Tax", desc:"Kentucky - Local Occupational Tax", taxType:"Local", portal:"", exchange:"YES", authProcess:"", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:false, complexity:2},
   {name:"KY Campbell County", sysCode:"", agency:"Campbell County Fiscal Court", desc:"Kentucky - Local Occupational Tax", taxType:"Local", portal:"", exchange:"YES", authProcess:"", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:true, complexity:1},
   {name:"KY City of Middletown", sysCode:"", agency:"City of Middletown", desc:"Kentucky - Local Occupational Tax", taxType:"Local", portal:"", exchange:"YES", authProcess:"", exchangeMethod:"Email exchange", rateExch:false, einExch:true, dsExch:false, complexity:1},
   // LOUISIANA
@@ -548,7 +701,7 @@ const agencies = [
   // MINNESOTA
   {name:"MN SIT", sysCode:"MN - DOR", agency:"Minnesota Dept. of Revenue", desc:"Minnesota - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   {name:"MN SUI", sysCode:"MN - DEED", agency:"Minnesota Unemployment Insurance / DEED", desc:"Minnesota - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:2},
-  {name:"MN Paid Leave", sysCode:"", agency:"Minnesota Paid Leave Program", desc:"Minnesota - Paid Family and Medical Leave", taxType:"PFML", portal:"", exchange:"NO", authProcess:"", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"MN Paid Leave", sysCode:"", agency:"Minnesota Paid Leave Program", desc:"Minnesota - Paid Family and Medical Leave", taxType:"PFML", portal:"YES", exchange:"NO", authProcess:"", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   // MISSISSIPPI
   {name:"MS SIT", sysCode:"MS - DOR", agency:"Mississippi Department of Revenue", desc:"Mississippi - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   {name:"MS SUI", sysCode:"MS - MDES", agency:"Mississippi Dept. of Employment Security", desc:"Mississippi - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:null},
@@ -645,18 +798,17 @@ const authYes     = agencies.filter(a=>a.authProcess&&a.authProcess!=="").length
 const authNo      = total - authYes;
 const researchDone= agencies.filter(a=>!["Local","OPT"].includes(a.taxType)).length; // approx
 
-document.getElementById("totalAgenciesKpi").innerHTML=`<div class="kpi-label">Total Agencies</div><div class="kpi-value" style="color:#2f9e5e">${total}</div><div class="kpi-sub">Across 50+ states + DC</div>`;
+document.getElementById("totalAgenciesKpi").innerHTML=`<div class="kpi-label">Total Agencies</div><div class="kpi-value" style="color:#0A8080">${total}</div><div class="kpi-sub">Across 50+ states + DC</div>`;
 
 document.getElementById("kpiRow").innerHTML=`<div class="kpi-card"><div class="kpi-label">Active Exchanges</div><div class="kpi-value" style="color:#f5a623">${exchYes}</div><div class="kpi-sub">${Math.round(exchYes/total*100)}% of agencies</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${Math.min(exchYes/total*100,100)}%;background:#f5a623"></div></div></div>`;
 
-document.getElementById("authProcessKpi").innerHTML=`<div class="kpi-label">Auth Process Set</div><div class="kpi-value" style="color:#4a7fc1">${authYes}</div><div class="kpi-sub">${authNo} agenc${authNo===1?'y':'ies'} require no auth</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${Math.min(authYes/total*100,100)}%;background:#4a7fc1"></div></div>`;
+document.getElementById("authProcessKpi").innerHTML=`<div class="kpi-label">Agencies Requiring Authorization for 1+ Actions</div><div class="kpi-value" style="color:#0A8080">${authYes}</div><div class="kpi-sub">${authNo} agenc${authNo===1?'y':'ies'} have no authorization requirements</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:${Math.min(authYes/total*100,100)}%;background:#0A8080"></div></div>`;
 
 document.getElementById("kpiRow2").innerHTML=[
   {label:"Rate Exchange",      value:rateCount,  sub:"",   color:getComputedStyle(document.documentElement).getPropertyValue('--rate-text').trim()||"#1d4ed8"},
   {label:"EIN Exchange",       value:einCount,   sub:"",   color:"#6d28d9"},
-  {label:"Deposit Schedule",   value:depCount,   sub:"",   color:"#065f46"},
+  {label:"Deposit Schedule",   value:depCount,   sub:"",   color:"#005961"},
   {label:"Multi-Label (2+)",   value:multiCount, sub:"Rate + EIN or DS", color:"#b45309"},
-  {label:"No Exchange Types", value:exchYes-rateCount-einCount-depCount+multiCount*2<0?0:agencies.filter(a=>a.exchange==="YES"&&!a.rateExch&&!a.einExch&&!a.dsExch).length, sub:"Has exchange, no type data", color:"#9ca3af"},
 ].map(k=>`<div class="kpi-card-sm"><div class="kpi-label-sm">${k.label}</div><div class="kpi-value-sm" style="color:${k.color}">${k.value}</div><div class="kpi-sub-sm">${k.sub}</div></div>`).join('');
 
 // ─── CHARTS ───────────────────────────────────────────────────────────────────
@@ -665,7 +817,7 @@ try {
   const authCounts={};
   agencies.filter(a=>a.authProcess).forEach(a=>{authCounts[a.authProcess]=(authCounts[a.authProcess]||0)+1;});
   const authLabels=Object.keys(authCounts).sort((a,b)=>authCounts[b]-authCounts[a]);
-  const authColors={'POA-only':'#ef4444','Customer self-serve':'#4a7fc1','Gusto self-serve':'#2f9e5e','Gusto self-serve+ INFO':'#5ab883','Joint effort':'#f59e0b','Other':'#9ca3af'};
+  const authColors={'POA-only':'#EF523C','Customer self-serve':'#4a7fc1','Gusto self-serve':'#0A8080','Gusto self-serve+ INFO':'#8DD3D4','Joint effort':'#f59e0b','Other':'#9ca3af'};
   authProcessChart = new Chart(document.getElementById("authProcessChart"),{
     type:'bar',
     data:{labels:authLabels,datasets:[{data:authLabels.map(l=>authCounts[l]),backgroundColor:authLabels.map(l=>authColors[l]||'#9ca3af'),borderRadius:6,borderSkipped:false}]},
@@ -676,7 +828,7 @@ try {
   agencies.filter(a=>a.exchangeMethod).forEach(a=>{exMethods[a.exchangeMethod]=(exMethods[a.exchangeMethod]||0)+1;});
   exchangeMethodChart = new Chart(document.getElementById("exchangeMethodChart"),{
     type:'doughnut',
-    data:{labels:Object.keys(exMethods),datasets:[{data:Object.values(exMethods),backgroundColor:['#2f9e5e','#4a7fc1','#f59e0b','#ef4444','#8b5cf6','#ec4899'],borderWidth:2,borderColor:'#ffffff'}]},
+    data:{labels:Object.keys(exMethods),datasets:[{data:Object.values(exMethods),backgroundColor:['#0A8080','#2BABAD','#8DD3D4','#EF523C','#F49582','#FAC6B9'],borderWidth:2,borderColor:'#ffffff'}]},
     options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'right',labels:{font:{size:11},padding:12,boxWidth:12}}}}
   });
 } catch(e) {
@@ -693,7 +845,7 @@ function exMethodBadge(v){
   const map = {
     'Direct download': {bg:'#dbeafe', color:'#1e40af'},
     'Pickup-Dropoff':  {bg:'#ede9fe', color:'#5b21b6'},
-    'Email exchange':  {bg:'#d1fae5', color:'#065f46'},
+    'Email exchange':  {bg:'#E0F2F5', color:'#005961'},
     'CD exchange':     {bg:'#fef3c7', color:'#92400e'},
     'Enrollment':      {bg:'#fce7f3', color:'#9d174d'},
   };
@@ -765,7 +917,7 @@ const avgDaysMap = {
   "CO SUI":8.5, "CT SIT":3, "CT SUI":5.5, "DC SIT":0.44, "DC SUI":1.75, "DC SUI/PFL":0,
   "FL SUI":2.25, "GA SIT":4.7, "GA SUI":30.5, "HI SUI":43,
   "IA SUI":5.5, "IL SUI":6, "IN SUI":1.75,
-  "Kenton County":5, "KY Campbell County":1.5,
+  "KY Kenton County":5, "KY Campbell County":1.5,
   "KS SUI":9.75, "KY SUI":4, "KY SIT":3.4,
   "LA SUI":0.5, "MA SUI":0.5, "MA SIT":6.2, "MD SUI":0,
   "ME SUI":12.25, "MI SUI":0.3, "MN SUI":3.75, "MO SUI":5,
@@ -785,7 +937,7 @@ avgDaysMap["AL SIT"] = 10.75;
 const avgDays2026Map = {
   "AL SUI":0, "AR SUI":1, "CA SIT/SUI":0, "CO SUI":9, "CT SIT":"TBD", "CT SUI":4,
   "DC SIT":1, "DC SUI/PFL":0, "FL SUI":0, "GA SUI":44, "HI SUI":"TBD", "IL SUI":3, "IN SUI":1,
-  "IA SUI":0, "KS SUI":1, "Kenton County":9, "KY Campbell County":8,
+  "IA SUI":0, "KS SUI":1, "KY Kenton County":9, "KY Campbell County":8,
   "KY SUI":1, "KY City of Middletown":1, "LA SUI":0, "ME SUI":7,
   "MD SUI":0, // kickoff listed as 2/6/2025 in sheet (likely typo), treating as same-day
   "MA SUI":1, "MI SUI":1, "MN SUI":0, "MS SUI":2, "MO SUI":5,
@@ -807,7 +959,7 @@ const cadenceMap = {
   "CO SUI":"Quarterly", "CT SUI":"Quarterly", "DC SUI/PFL":"Quarterly",
   "FL SUI":"Quarterly", "GA SUI":"Quarterly", "IL SUI":"Quarterly",
   "IN SUI":"Quarterly", "IA SUI":"Quarterly", "KS SUI":"Quarterly",
-  "Kenton County":"Quarterly", "KY Campbell County":"Quarterly",
+  "KY Kenton County":"Quarterly", "KY Campbell County":"Quarterly",
   "KY SUI":"Quarterly", "KY City of Middletown":"Quarterly",
   "LA SUI":"Quarterly", "ME SUI":"Quarterly", "MD SUI":"Quarterly",
   "MA SUI":"Quarterly", "MI SUI":"Quarterly", "MN SUI":"Quarterly",
@@ -827,8 +979,8 @@ function cadenceHtml(name){
   const v = cadenceMap[name];
   if(!v) return `<span style="color:#d1d5db;font-size:10px">—</span>`;
   const badge = c => {
-    const color = c==='Annual' ? '#92400e' : c==='Monthly' ? '#5b21b6' : c==='Email exchange' ? '#065f46' : '#1e40af';
-    const bg    = c==='Annual' ? '#fef3c7' : c==='Monthly' ? '#ede9fe' : c==='Email exchange' ? '#d1fae5' : '#dbeafe';
+    const color = c==='Annual' ? '#92400e' : c==='Monthly' ? '#5b21b6' : c==='Email exchange' ? '#005961' : '#1e40af';
+    const bg    = c==='Annual' ? '#fef3c7' : c==='Monthly' ? '#ede9fe' : c==='Email exchange' ? '#E0F2F5' : '#dbeafe';
     return `<span style="font-size:10px;font-weight:700;color:${color};background:${bg};padding:2px 7px;border-radius:4px;white-space:nowrap">${c}</span>`;
   };
   return Array.isArray(v) ? v.map(badge).join(' ') : badge(v);
@@ -840,8 +992,8 @@ function avgDaysHtml(name, use2026=false){
   if(v===undefined||v===null) return `<span style="color:#d1d5db;font-size:10px">—</span>`;
   if(v==='TBD') return `<span style="font-size:10px;font-weight:700;color:#6b7280;background:#f3f4f6;padding:2px 7px;border-radius:4px;white-space:nowrap">TBD</span>`;
   if(v==='N/A') return `<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>`;
-  const color = v<=3 ? '#166534' : v<=10 ? '#92400e' : '#991b1b';
-  const bg    = v<=3 ? '#dcfce7' : v<=10 ? '#fef3c7' : '#fee2e2';
+  const color = v<=3 ? '#005961' : v<=10 ? '#92400e' : '#991b1b';
+  const bg    = v<=3 ? '#E0F2F5' : v<=10 ? '#fef3c7' : '#fee2e2';
   return `<span style="font-size:10px;font-weight:700;color:${color};background:${bg};padding:2px 7px;border-radius:4px;white-space:nowrap">${v}d</span>`;
 }
 
@@ -938,13 +1090,14 @@ const authData = [
   {name:"CO SIT",  agency:"Colorado Department of Revenue",              taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"CO SUI",  agency:"Colorado State Treasurer / CO Dept. of Labor",taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:true},
   {name:"CO FAMLI", agency:"Colorado - FAMLI",                            taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"CO Denver OPT", agency:"Denver Dept. of Finance",               taxType:"OPT",          authProcess:"",                       pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
   {name:"CT SIT",  agency:"Commissioner of Revenue Services",            taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"CT SUI",  agency:"Connecticut Dept. of Labor",                  taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"CT PFML", agency:"Connecticut Paid Leave Authority",            taxType:"PFML",         authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"DE SIT",  agency:"Delaware Division of Revenue",                taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"DE SUI",  agency:"Delaware Dept. of Labor",                     taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
   {name:"DC SIT",  agency:"D.C. Treasurer / Office of Tax and Revenue",  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
-  {name:"DC SUI",  agency:"DC Dept. of Employment Services",             taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"DC SUI/PFL", agency:"DC Dept. of Employment Services",          taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"FL SUI",  agency:"Florida Department of Revenue",               taxType:"SUI",          authProcess:"Gusto self-serve+ INFO", pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"GA SIT",  agency:"Georgia Department of Revenue",               taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"GA SUI",  agency:"Georgia Department of Labor",                 taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
@@ -962,6 +1115,9 @@ const authData = [
   {name:"KS SUI",  agency:"Kansas Dept. of Labor",                       taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:false, portal:true,  amend:false, exchange:true},
   {name:"KY SIT",  agency:"Kentucky Department of Revenue",              taxType:"SIT",          authProcess:"Other (see notes)",      pay:false, file:false, phone:false, portal:true,  amend:true,  exchange:false},
   {name:"KY SUI",  agency:"Kentucky Office of Unemployment Insurance",   taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"KY Kenton County", agency:"Kenton County Occupational Tax",      taxType:"Local",        authProcess:"",                       pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
+  {name:"KY Campbell County", agency:"Campbell County Fiscal Court",      taxType:"Local",        authProcess:"",                       pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
+  {name:"KY City of Middletown", agency:"City of Middletown",             taxType:"Local",        authProcess:"",                       pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
   {name:"LA SIT",  agency:"Louisiana Department of Revenue",             taxType:"SIT",          authProcess:"Other (see notes)",      pay:false, file:false, phone:false, portal:true,  amend:true,  exchange:false},
   {name:"LA SUI",  agency:"Louisiana Workforce Commission",              taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
   {name:"ME SIT",  agency:"Maine Revenue Services",                      taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
@@ -975,6 +1131,7 @@ const authData = [
   {name:"MI SUI",  agency:"Michigan Dept. of Labor and Economic Opp.",   taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"MN SIT",  agency:"Minnesota Dept. of Revenue",                  taxType:"SIT",          authProcess:"Joint effort",           pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"MN SUI",  agency:"Minnesota Dept. of Employment & Economic Dev.",taxType:"SUI",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"MN Paid Leave", agency:"Minnesota Paid Leave Program",           taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"MS SIT",  agency:"Mississippi Department of Revenue",           taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"MS SUI",  agency:"Mississippi Dept. of Employment Security",    taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
   {name:"MO SIT",  agency:"Missouri Department of Revenue",              taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
@@ -1018,7 +1175,7 @@ const authData = [
   {name:"VT SUI",  agency:"Vermont Department of Labor",                 taxType:"SUI",          authProcess:"POA-only",               pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:true},
   {name:"VA SIT",  agency:"Virginia Department of Taxation",             taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"VA SUI",  agency:"Virginia Employment Commission",              taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
-  {name:"WA LNI",  agency:"Washington Dept. of Labor & Industries",      taxType:"WC",authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"WA LNI/WC", agency:"Washington Dept. of Labor & Industries",    taxType:"WC",           authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"WA SUI",  agency:"Washington Employment Security Dept.",        taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"WA PFML", agency:"Washington Employment Security Dept. (PFML)", taxType:"PFML",         authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"WV SIT",  agency:"West Virginia State Tax Department",          taxType:"SIT",          authProcess:"Joint effort",           pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:false},
@@ -1115,10 +1272,10 @@ renderAuthTable();
     return `
       <div style="flex:1;min-width:110px;padding:12px 16px;border-right:1px solid var(--border)">
         <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">${a.label}</div>
-        <div style="font-size:24px;font-weight:800;color:var(--blue);line-height:1">${count}</div>
+        <div style="font-size:24px;font-weight:800;color:#0A8080;line-height:1">${count}</div>
         <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${pct}% of agencies</div>
         <div style="margin-top:8px;background:var(--gray-light);border-radius:100px;height:4px;overflow:hidden">
-          <div style="width:${pct}%;height:100%;background:var(--blue);border-radius:100px"></div>
+          <div style="width:${pct}%;height:100%;background:#0A8080;border-radius:100px"></div>
         </div>
       </div>`;
   }).join('');
@@ -1235,7 +1392,7 @@ let poaSearch = '';
 
 function boolBadge(val, trueLabel, falseLabel){
   if(val==='N/A') return `<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>`;
-  if(val) return `<span style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:#dcfce7;color:#166534;">${trueLabel||'YES'}</span>`;
+  if(val) return `<span style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:#E0F2F5;color:#005961;">${trueLabel||'YES'}</span>`;
   return `<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:#f3f4f6;color:#9ca3af;">${falseLabel||'NO'}</span>`;
 }
 
@@ -1246,7 +1403,7 @@ function sigBadge(v){
     'WET':        {bg:'#fce7f3',color:'#9d174d'},
     'ESIG':       {bg:'#dbeafe',color:'#1e40af'},
     'EITHER':     {bg:'#ede9fe',color:'#5b21b6'},
-    'PORTAL':     {bg:'#d1fae5',color:'#065f46'},
+    'PORTAL':     {bg:'#E0F2F5',color:'#005961'},
     'LIKELY WET': {bg:'#fef3c7',color:'#92400e'},
     'NOT SPECIFIED': {bg:'#111827',color:'#ffffff'},
   };
@@ -1261,9 +1418,9 @@ function transBadge(v){
   const map = {
     'FAX':            {bg:'#fef3c7',color:'#92400e'},
     'MAIL':           {bg:'#dbeafe',color:'#1e40af'},
-    'EMAIL':          {bg:'#d1fae5',color:'#065f46'},
+    'EMAIL':          {bg:'#E0F2F5',color:'#005961'},
     'ELEC':           {bg:'#ede9fe',color:'#5b21b6'},
-    'PORTAL':         {bg:'#dcfce7',color:'#166534'},
+    'PORTAL':         {bg:'#E0F2F5',color:'#005961'},
     'ENROLLMENT FILE':{bg:'#fce7f3',color:'#9d174d'},
   };
   return methods.map(m => {
@@ -1300,8 +1457,8 @@ function renderPoaTable(){
       <td class="auth-cell">${boolBadge(p.mou,'YES','NO')}</td>
       <td class="auth-cell">${boolBadge(p.accepts8655,'YES','NO')}</td>
       <td class="auth-cell">${boolBadge(p.inapp,'YES','NO')}</td>
-      <td class="auth-cell">${p.pf ? '<span style="color:#166534;font-size:13px">✓</span>' : '<span style="color:#d1d5db">—</span>'}</td>
-      <td class="auth-cell">${p.use==='N/A' ? '<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>' : (p.agencyCall !== undefined ? p.agencyCall : (p.use && p.use.toLowerCase().includes('speak w/ agency'))) ? '<span style="color:#166534;font-size:13px">✓</span>' : '<span style="color:#d1d5db">—</span>'}</td>
+      <td class="auth-cell">${p.pf ? '<span style="color:#005961;font-size:13px">✓</span>' : '<span style="color:#d1d5db">—</span>'}</td>
+      <td class="auth-cell">${p.use==='N/A' ? '<span style="font-size:10px;color:#9ca3af;font-style:italic">N/A</span>' : (p.agencyCall !== undefined ? p.agencyCall : (p.use && p.use.toLowerCase().includes('speak w/ agency'))) ? '<span style="color:#005961;font-size:13px">✓</span>' : '<span style="color:#d1d5db">—</span>'}</td>
       <td style="font-size:11px;max-width:180px">${p.use==='N/A' ? '<span style="color:#9ca3af;font-style:italic">N/A</span>' : p.use || '<span style="color:#d1d5db">—</span>'}</td>
       <td style="font-size:11px;max-width:200px">${p.form==='N/A' ? '<span style="color:#9ca3af;font-style:italic">N/A</span>' : p.form || '<span style="color:#d1d5db">—</span>'}</td>
     </tr>`;
@@ -1320,6 +1477,9 @@ renderPoaTable();
 // To add entries: add an object to the TOP of this array (most recent first).
 // Types: "data" | "feature" | "fix" | "structure"
 const changelogData = [
+  {date:"2026-05-14", type:"data",      desc:"KY Kenton County: renamed from 'Kenton County', added EIN to exchange types. MN Paid Leave: Portal updated to Yes.", agencies:"KY Kenton County, MN Paid Leave"},
+  {date:"2026-05-14", type:"feature",   desc:"Added Legend & Glossary section with collapsible tables defining every column across all three sections. Also added nav link.", agencies:""},
+  {date:"2026-05-14", type:"fix",       desc:"Fixed agency dropdown in Submit a Correction form — was not populating due to a stale reference to a removed form element causing a silent JS error.", agencies:""},
   {date:"2026-04-29", type:"data",      desc:"NV MBT: updated agency name to Nevada Department of Taxation, description to Nevada - Modified Business Tax, Exchange set to YES, method updated to Email exchange.",  agencies:"NV MBT"},
   {date:"2026-04-29", type:"data",      desc:"FL SUI POA: In-App column updated to Yes.",                                                                                                                           agencies:"FL SUI"},
   {date:"2026-04-29", type:"data",      desc:"WV SIT Authorization: Pay and File columns updated to Yes.",                                                                                                          agencies:"WV SIT"},
@@ -1373,6 +1533,7 @@ const sources = [
   {title:"2026 Exchange Data", url:"https://docs.google.com/spreadsheets/d/1nMMjAu-G85XdKP-KqTQ4B3Sq795nt2HOLJ4kXAUEDEg/edit?gid=1819118255#gid=1819118255", note:""},
   {title:"Payroll Agreements, Approvals, Licenses, MOUs, testing requirements, etc", url:"https://docs.google.com/spreadsheets/d/1cxAe1XxeVIX_w7ApiNqg9SFCWiiOoqmZIXt8sJSgOes/edit?gid=690803509#gid=690803509", note:""},
   {title:"Manual Data Exchanges Analysis ", url:"https://docs.google.com/spreadsheets/d/1uVDmRfESvAnq-ufHsC5LLvVulsWjHIk05Lxg2rSPBvs/edit?gid=0#gid=0", note:""},
+  {title:"Compliance Operations Agency Atlas One-Pager", url:"https://docs.google.com/document/d/1gWvC1B91NFDAxt4yHgWtno855g8H8NMpn6YZT3U3NL8/edit?tab=t.0", note:""},
 ];
 
 function renderSources(){
@@ -1402,7 +1563,8 @@ function removeSource(i){
 
 renderSources();
 renderChangelog();
-document.getElementById('clDate').value = new Date().toISOString().split('T')[0];
+const _clDate = document.getElementById('clDate');
+if(_clDate) _clDate.value = new Date().toISOString().split('T')[0];
 
 // ─── GOOGLE SHEETS SYNC ────────────────────────────────────────────────────────
 const SHEET_ID = '1yZ-0WEomPS5TjLL-d312aRxyIMXk2cHS8tej9TNHvak';
@@ -1536,9 +1698,9 @@ async function syncFromSheet(){
     const now = new Date();
     const timeStr = now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     const dateStr = now.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
-    setSyncBtn(`✓ Synced at ${timeStr}`,'#dcfce7','#166534',false);
+    setSyncBtn(`✓ Synced at ${timeStr}`,'#E0F2F5','#005961',false);
     document.getElementById('lastSynced').textContent = `Last synced: ${dateStr} at ${timeStr}`;
-    document.getElementById('lastSynced').style.color = '#16a34a';
+    document.getElementById('lastSynced').style.color = '#0A8080';
     setTimeout(()=>setSyncBtn('🔄 Sync from Sheet','','',false), 4000);
 
   } catch(e) {
@@ -1635,6 +1797,116 @@ function renderCorrectionLog(){
     </div>`).join('');
 }
 
+// ─── AGENCY PROFILE PANEL ─────────────────────────────────────────────────────
+function openPanel(name) {
+  const exc  = exchangeData.find(a => a.name === name);
+  const auth = authData.find(a => a.name === name);
+  const poa  = poaData.find(a => a.name === name);
+
+  // Header
+  const fullName = auth?.agency || exc?.agency || exc?.desc || '';
+  const taxType  = auth?.taxType || exc?.taxType || '';
+  document.getElementById('panelAgencyName').textContent = name;
+  document.getElementById('panelAgencyFull').textContent = fullName;
+  const typeClass = {SIT:'tag-SIT',SUI:'tag-SUI',PFML:'tag-PFML','Workers\' Comp':'tag-WC',WC:'tag-WC',Local:'tag-Local',MBT:'tag-MBT'}[taxType] || 'tag-Other';
+  document.getElementById('panelAgencyType').innerHTML = taxType ? `<span class="tag ${typeClass}">${taxType}</span>` : '';
+
+  // Build body
+  const row = (key, val) => {
+    if(val === null || val === undefined || val === '') val = '—';
+    return `<div class="panel-row"><span class="panel-key">${key}</span><span class="panel-val">${val}</span></div>`;
+  };
+  const bool = v => v === true ? '<span class="auth-yes">✓</span>' : v === false ? '<span class="auth-no">—</span>' : v || '—';
+
+  let html = '';
+
+  // ── Data Exchanges ──────────────────────────────────────────────
+  html += `<div class="panel-section">
+    <div class="panel-section-title exc">Data Exchanges</div>`;
+  if (exc) {
+    const exTypes = [exc.rateExch&&'Rate',exc.einExch&&'EIN',exc.dsExch&&'Deposit Sched.'].filter(Boolean);
+    html += row('Exchange', exc.exchange || '—');
+    html += row('Exchange method', exc.exchangeMethod || '—');
+    html += row('Exchange types', exTypes.length ? exTypes.join(', ') : '—');
+    html += row('Portal', exc.portal || '—');
+    html += row('Complexity', exc.complexity != null ? `${exc.complexity} / 5` : '—');
+    html += row('Cadence', exc.cadence || '—');
+    html += row('Auth process', exc.authProcess || '—');
+  } else {
+    html += `<p class="panel-none">No data exchanges entry for this agency.</p>`;
+  }
+  html += `</div>`;
+
+  // ── Authorization ───────────────────────────────────────────────
+  html += `<div class="panel-section">
+    <div class="panel-section-title auth">Authorization Requirements</div>`;
+  if (auth) {
+    html += row('Auth process', auth.authProcess || '—');
+    html += row('Pay', bool(auth.pay));
+    html += row('File', bool(auth.file));
+    html += row('Phone / Agency', bool(auth.phone));
+    html += row('Portal / Bot', bool(auth.portal));
+    html += row('Amendments', bool(auth.amend));
+    html += row('Data exchange', bool(auth.exchange));
+  } else {
+    html += `<p class="panel-none">No authorization entry for this agency.</p>`;
+  }
+  html += `</div>`;
+
+  // ── POA Requirements ────────────────────────────────────────────
+  html += `<div class="panel-section">
+    <div class="panel-section-title poa">POA Requirements</div>`;
+  if (poa) {
+    html += row('Form name', poa.form || '—');
+    html += row('Signature type', poa.sig || '—');
+    html += row('Transmission', poa.trans || '—');
+    html += row('Notarization', poa.notary || '—');
+    html += row('MOU required', poa.mou || '—');
+    html += row('In-app', poa.inapp || '—');
+    html += row('P&F', poa.pf || '—');
+    html += row('Agency call', poa.agencyCall || '—');
+    html += row("Gusto's use", poa.use || '—');
+    html += row('Accepts 8655', poa.accepts8655 || '—');
+  } else {
+    html += `<p class="panel-none">No POA entry for this agency.</p>`;
+  }
+  html += `</div>`;
+
+  // ── Footer: submit correction ───────────────────────────────────
+  html += `<div style="padding-top:16px;border-top:1px solid var(--border);margin-top:4px;">
+    <a href="#anchor-corrections" id="panelCorrectionLink"
+       style="font-size:12px;font-weight:600;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;display:inline-block;transition:all .15s;"
+       onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'"
+       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+      Submit a correction for ${name} →
+    </a>
+  </div>`;
+
+  document.getElementById('panelBody').innerHTML = html;
+
+  // Wire up the correction link safely (no inline JS)
+  const corrLink = document.getElementById('panelCorrectionLink');
+  if (corrLink) {
+    corrLink.addEventListener('click', () => {
+      const el = document.getElementById('crAgency');
+      if (el) el.value = name;
+      closePanel();
+    });
+  }
+
+  var modal = document.getElementById('agencyModal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closePanel() {
+  document.getElementById('agencyModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Close panel on Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
 function clearCorrectionForm(){
   ['crAgency','crSection','crField','crCurrent','crSuggested','crName','crNotes'].forEach(id => {
     const el = document.getElementById(id);
@@ -1642,6 +1914,21 @@ function clearCorrectionForm(){
   });
   document.getElementById('crNotes').value = '';
 }
+
+function submitFeedback(){
+  window.open('https://docs.google.com/forms/d/e/1FAIpQLSc8651OymVBQqaaBecFGMWjomltAG1laiIxGSANfZHql66ufw/viewform', '_blank');
+  const status = document.getElementById('fbStatus');
+  status.textContent = '✓ Google Form opened!';
+  status.style.display = 'inline';
+  setTimeout(() => { status.style.display = 'none'; }, 3000);
+}
+
+function clearFeedbackForm(){
+  document.getElementById('fbName').value    = '';
+  document.getElementById('fbMessage').value = '';
+  document.getElementById('fbStatus').style.display = 'none';
+}
+
 </script>
 </body>
 </html>
