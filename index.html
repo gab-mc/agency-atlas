@@ -671,7 +671,7 @@ const agencies = [
   {name:"IL SIT", sysCode:"IL - DOR", agency:"Illinois Withholding / Dept. of Revenue", desc:"Illinois - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   {name:"IL SUI", sysCode:"IL - IDES", agency:"Illinois Unemployment / IDES", desc:"Illinois - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:3},
   // INDIANA
-  {name:"IN SIT", sysCode:"IN - DOR", agency:"Indiana Department of Revenue", desc:"Indiana - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Joint effort", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"IN SIT", sysCode:"IN - DOR", agency:"Indiana Department of Revenue", desc:"Indiana - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:false, dsExch:false, complexity:null},
   {name:"IN SUI", sysCode:"IN - DWD", agency:"Indiana Dept. of Workforce Development", desc:"Indiana - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:4},
   // KANSAS
   {name:"KS SIT", sysCode:"KS - KDOR", agency:"Kansas Dept. of Revenue", desc:"Kansas - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Other", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
@@ -746,7 +746,7 @@ const agencies = [
   {name:"OR SUI", sysCode:"OR - OED", agency:"Oregon Employment Department", desc:"Oregon - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:false, dsExch:false, complexity:4},
   // PENNSYLVANIA
   {name:"PA SIT", sysCode:"PA - DOR", agency:"Pennsylvania Department of Revenue", desc:"Pennsylvania - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Pickup-Dropoff", rateExch:false, einExch:true, dsExch:true, complexity:3},
-  {name:"PA SUI", sysCode:"PA - L&I", agency:"Pennsylvania UC Fund / Dept. of Labor & Industry", desc:"Pennsylvania - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Direct download", rateExch:true, einExch:true, dsExch:false, complexity:null},
+  {name:"PA SUI", sysCode:"PA - L&I", agency:"Pennsylvania UC Fund / Dept. of Labor & Industry", desc:"Pennsylvania - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Customer self-serve", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:null},
   // RHODE ISLAND
   {name:"RI SIT", sysCode:"RI - TAX", agency:"Rhode Island Division of Taxation", desc:"Rhode Island - Employee Withholding", taxType:"SIT", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   {name:"RI SUI", sysCode:"RI - DLT", agency:"Rhode Island Dept. of Labor and Training", desc:"Rhode Island - Employer Unemployment", taxType:"SUI", portal:"", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Email exchange", rateExch:true, einExch:false, dsExch:false, complexity:3},
@@ -756,7 +756,7 @@ const agencies = [
   // SOUTH DAKOTA
   {name:"SD SUI", sysCode:"SD - DLR", agency:"SD Dept. of Labor and Regulation", desc:"South Dakota - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Email exchange", rateExch:true, einExch:true, dsExch:false, complexity:5},
   // TENNESSEE
-  {name:"TN SUI", sysCode:"TN - DLWD", agency:"TN Dept. of Labor & Workforce Development", desc:"Tennessee - Employer Unemployment", taxType:"SUI", portal:"OTHER", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:1},
+  {name:"TN SUI", sysCode:"TN - DLWD", agency:"TN Dept. of Labor & Workforce Development", desc:"Tennessee - Employer Unemployment", taxType:"SUI", portal:"OTHER", exchange:"YES", authProcess:"POA-only", exchangeMethod:"Email exchange", rateExch:true, einExch:false, dsExch:false, complexity:1},
   // TEXAS
   {name:"TX SUI", sysCode:"TX - TWC", agency:"Texas Workforce Commission", desc:"Texas - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Joint effort", exchangeMethod:"Pickup-Dropoff", rateExch:true, einExch:true, dsExch:false, complexity:4},
   // UTAH
@@ -936,7 +936,7 @@ avgDaysMap["AL SIT"] = 10.75;
 // ─── AVG DAYS TO COMPLETE 2026 (from Quarterly_Q1 sheet, kickoff→completion) ──
 const avgDays2026Map = {
   "AL SUI":0, "AR SUI":1, "CA SIT/SUI":0, "CO SUI":9, "CT SIT":"TBD", "CT SUI":4,
-  "DC SIT":1, "DC SUI/PFL":0, "FL SUI":0, "GA SUI":44, "HI SUI":"TBD", "IL SUI":3, "IN SUI":1,
+  "DC SIT":1, "DC SUI/PFL":2.5, "FL SUI":0, "GA SUI":44, "HI SUI":"TBD", "IL SUI":2, "IN SUI":0.5,
   "IA SUI":0, "KS SUI":1, "KY Kenton County":9, "KY Campbell County":8,
   "KY SUI":1, "KY City of Middletown":1, "LA SUI":0, "ME SUI":7,
   "MD SUI":0, // kickoff listed as 2/6/2025 in sheet (likely typo), treating as same-day
@@ -945,8 +945,8 @@ const avgDays2026Map = {
   "NJ SUI":10, "NM SUI":1, "NC SUI":1, "NC SIT":6, "ND SUI":3, "NY SUI":1,
   "OH SUI":2, "OK SUI":6, "OR SUI":0, "PA SUI":7, "PA SIT":6,
   "RI SUI":21, "SC SUI":0, "SD SUI":22, "TN SUI":0, "TX SUI":9,
-  "UT SUI":29, "VT SUI":0, "VA SUI":17, "VA SIT":7, "WA LNI/WC":1,
-  "WA SUI":1, "WV SUI":28, "WI SUI":13, "WI SIT":10,
+  "UT SUI":29, "VT SUI":0, "VA SUI":17, "VA SIT":6.5, "WA LNI/WC":1,
+  "WA SUI":1, "WV SUI":28, "WI SUI":9.5, "WI SIT":10,
 };
 
 // ─── CADENCE MAP (from Quarterly_Q1 sheet — all present = Quarterly) ─────────
@@ -1323,14 +1323,14 @@ const poaData = [
   {name:"KY SUI", sysCode:"21-000-0000-ER_SUTA-000", desc:"Kentucky - Employer Unemployment", form:"Kentucky Power of Attorney", sig:"", trans:"FAX/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
   {name:"LA SIT", sysCode:"22-000-0000-SIT-000", desc:"Louisiana - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
   {name:"LA SUI", sysCode:"22-000-0000-ER_SUTA-000", desc:"Louisiana - Employer Unemployment", form:"", sig:"No requirements", trans:"ENROLLMENT FILE", notary:false, mou:false, inapp:false, use:""},
-  {name:"ME SIT", sysCode:"23-000-0000-SIT-000", desc:"Maine - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"ME SIT", sysCode:"23-000-0000-SIT-000", desc:"Maine - Employee Withholding", form:"2848 ME POA", sig:"WET", trans:"", notary:false, mou:false, inapp:false, use:"Only required when discussing specific accounts in detail; typed/fancy font signatures not accepted", agencyCall:true},
   {name:"ME SUI", sysCode:"23-000-0000-ER_SUTA-000", desc:"Maine - Employer Unemployment", form:"", sig:"", trans:"EMAIL", notary:false, mou:false, inapp:false, use:"", accepts8655:true},
   {name:"MD SIT", sysCode:"24-000-0000-SIT-000", desc:"Maryland - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:true, use:""},
   {name:"MD SUI", sysCode:"24-000-0000-ER_SUTA-000", desc:"Maryland - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:true, use:""},
   {name:"MA SIT", sysCode:"25-000-0000-SIT-000", desc:"Massachusetts - Employee Withholding", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:""},
   {name:"MA PFML", sysCode:"25-000-0000-FLI-000", desc:"Massachusetts - Paid Family and Medical Leave", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:""},
   {name:"MA SUI", sysCode:"25-000-0000-ER_SUTA-000", desc:"Massachusetts - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
-  {name:"MI SIT", sysCode:"26-000-0000-SIT-000", desc:"Michigan - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"MI SIT", sysCode:"26-000-0000-SIT-000", desc:"Michigan - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:true, use:""},
   {name:"MI SUI", sysCode:"26-000-0000-ER_SUTA-000", desc:"Michigan - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
   {name:"MN SIT", sysCode:"27-000-0000-SIT-000", desc:"Minnesota - Employee Withholding", form:"Form REV184b, Business Power of Attorney", sig:"WET SIG", trans:"FAX/MAIL/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
   {name:"MN SUI", sysCode:"27-000-0000-ER_SUTA-000", desc:"Minnesota - Employer Unemployment", form:"", sig:"No requirements", trans:"N/A", notary:false, mou:false, inapp:false, use:""},
@@ -1477,6 +1477,9 @@ renderPoaTable();
 // To add entries: add an object to the TOP of this array (most recent first).
 // Types: "data" | "feature" | "fix" | "structure"
 const changelogData = [
+  {date:"2026-05-28", type:"data",      desc:"ME SIT POA: Form set to 2848 ME POA, Signature set to WET, Use notes added (required for specific account discussions; typed/fancy font not accepted).", agencies:"ME SIT"},
+  {date:"2026-05-28", type:"data",      desc:"Turnaround (2026) updated for 5 agencies using Q1+Q2 averages: DC SUI/PFL (2.5d), IL SUI (2d), IN SUI (0.5d), VA SIT (6.5d), WI SUI (9.5d).", agencies:"DC SUI/PFL, IL SUI, IN SUI, VA SIT, WI SUI"},
+  {date:"2026-05-28", type:"data",      desc:"MI SIT POA: In-App updated to Yes. PA SUI: exchange method corrected from Direct Download to Pickup-Dropoff. TN SUI: exchange method corrected from Direct Download to Email Exchange. IN SIT: Exchange updated to Yes, method set to Pickup-Dropoff.", agencies:"MI SIT, PA SUI, TN SUI, IN SIT"},
   {date:"2026-05-14", type:"data",      desc:"KY Kenton County: renamed from 'Kenton County', added EIN to exchange types. MN Paid Leave: Portal updated to Yes.", agencies:"KY Kenton County, MN Paid Leave"},
   {date:"2026-05-14", type:"feature",   desc:"Added Legend & Glossary section with collapsible tables defining every column across all three sections. Also added nav link.", agencies:""},
   {date:"2026-05-14", type:"fix",       desc:"Fixed agency dropdown in Submit a Correction form — was not populating due to a stale reference to a removed form element causing a silent JS error.", agencies:""},
