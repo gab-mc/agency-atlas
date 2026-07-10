@@ -198,7 +198,7 @@
     <p style="margin-bottom:2px;">A centralized reference for state &amp; local tax agency research, authorization requirements, and POA processes.</p>
     <p>Created &amp; maintained by Compliance Operations &nbsp;·&nbsp; Questions? Slack <strong>@gab</strong></p>
   </div>
-  <div class="badge" id="headerBadge">— Agencies · Updated June 2026</div>
+  <div class="badge" id="headerBadge">— Agencies · Updated July 2026</div>
   <button id="darkToggle" onclick="toggleDark()" title="Toggle dark mode" style="font-size:16px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;line-height:1;transition:all .15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🌙</button>
 </header>
 
@@ -244,9 +244,9 @@
     <span style="color:#F45D48;font-size:14px;">·</span>
     <a href="#anchor-feedback" style="font-size:12px;font-weight:600;color:#be185d;text-decoration:none;background:#fce7f3;border:1px solid #f9a8d4;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#be185d';this.style.color='white'" onmouseout="this.style.background='#fce7f3';this.style.color='#be185d'">Leave Feedback</a>
     <span style="color:#F45D48;font-size:14px;">·</span>
-    <a href="#anchor-changelog" style="font-size:12px;font-weight:600;color:#0f766e;text-decoration:none;background:#ccfbf1;border:1px solid #5eead4;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#0f766e';this.style.color='white'" onmouseout="this.style.background='#ccfbf1';this.style.color='#0f766e'">Changelog</a>
-    <span style="color:#F45D48;font-size:14px;">·</span>
     <a href="#anchor-sources" style="font-size:12px;font-weight:600;color:#0369a1;text-decoration:none;background:#e0f2fe;border:1px solid #7dd3fc;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#0369a1';this.style.color='white'" onmouseout="this.style.background='#e0f2fe';this.style.color='#0369a1'">Sources &amp; References</a>
+    <span style="color:#F45D48;font-size:14px;">·</span>
+    <a href="#anchor-changelog" style="font-size:12px;font-weight:600;color:#0f766e;text-decoration:none;background:#ccfbf1;border:1px solid #5eead4;padding:4px 10px;border-radius:100px;transition:all .15s;white-space:nowrap;" onmouseover="this.style.background='#0f766e';this.style.color='white'" onmouseout="this.style.background='#ccfbf1';this.style.color='#0f766e'">Changelog</a>
   </div>
 
   <div id="anchor-exchanges" class="section-title">
@@ -571,9 +571,9 @@
   <hr class="section-divider">
   <div id="anchor-feedback" class="section-title">
     <span class="section-title-text">Leave Feedback</span>
-    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionFeedback')">▲ Collapse</button>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionFeedback')">▼ Expand</button>
   </div>
-  <div id="sectionFeedback">
+  <div id="sectionFeedback" style="display:none;"
     <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
       <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;">
         Have a general comment, question, or suggestion about the Agency Atlas? Click <strong style="color:var(--text)">Send Feedback</strong> to open the feedback form in a new tab.
@@ -597,6 +597,20 @@
   </div>
 
   <hr class="section-divider">
+  <div id="anchor-sources" class="section-title">
+    <span class="section-title-text">Sources &amp; References</span>
+    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionSources')">▼ Expand</button>
+  </div>
+  <div id="sectionSources" style="display:none;"
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sources used in building and maintaining this dashboard. Click any link to open.</p>
+      <div id="sourcesList" style="display:flex;flex-direction:column;gap:10px;">
+        <!-- sources rendered here by JS -->
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
   <div id="anchor-changelog" class="section-title">
     <span class="section-title-text">Changelog</span>
     <button class="section-collapse-btn" onclick="toggleSection(this,'sectionChangelog')">▲ Collapse</button>
@@ -605,20 +619,6 @@
     <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
       <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;">A running log of updates, corrections, and new features added to this dashboard. Most recent changes appear first.</p>
       <div id="changelogList"></div>
-    </div>
-  </div>
-
-  <hr class="section-divider">
-  <div id="anchor-sources" class="section-title">
-    <span class="section-title-text">Sources &amp; References</span>
-    <button class="section-collapse-btn" onclick="toggleSection(this,'sectionSources')">▲ Collapse</button>
-  </div>
-  <div id="sectionSources">
-    <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;box-shadow:var(--shadow);">
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Sources used in building and maintaining this dashboard. Click any link to open.</p>
-      <div id="sourcesList" style="display:flex;flex-direction:column;gap:10px;">
-        <!-- sources rendered here by JS -->
-      </div>
     </div>
   </div>
 </main>
@@ -793,7 +793,7 @@ const agencies = [
   {name:"WY WC", sysCode:"", agency:"Wyoming Dept. of Workforce Services (WC)", desc:"Wyoming - Workers' Compensation", taxType:"WC", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
 ];
 
-document.getElementById("headerBadge").textContent = `${agencies.length} Agencies · Updated June 2026`;
+document.getElementById("headerBadge").textContent = `${agencies.length} Agencies · Updated July 2026`;
 
 // ─── KPIs ─────────────────────────────────────────────────────────────────────
 const total       = agencies.length;
@@ -1096,9 +1096,9 @@ const authData = [
   {name:"AZ SUI",  agency:"Arizona Dept. of Economic Security",          taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
   {name:"AR SIT",  agency:"Dept. of Finance and Administration",         taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"AR SUI",  agency:"Arkansas Dept. of Workforce Services",        taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
-  {name:"CA SIT/SUI", agency:"CA-EDD",                                   taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"CA SIT/SUI", agency:"CA-EDD",                                   taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
   {name:"CO SIT",  agency:"Colorado Department of Revenue",              taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
-  {name:"CO SUI",  agency:"Colorado State Treasurer / CO Dept. of Labor",taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:true},
+  {name:"CO SUI",  agency:"Colorado State Treasurer / CO Dept. of Labor",taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"CO FAMLI", agency:"Colorado - FAMLI",                            taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"CO Denver OPT", agency:"Denver Dept. of Finance",               taxType:"OPT",          authProcess:"",                       pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
   {name:"CT SIT",  agency:"Commissioner of Revenue Services",            taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
@@ -1106,6 +1106,7 @@ const authData = [
   {name:"CT PFML", agency:"Connecticut Paid Leave Authority",            taxType:"PFML",         authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"DE SIT",  agency:"Delaware Division of Revenue",                taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"DE SUI",  agency:"Delaware Dept. of Labor",                     taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
+  {name:"DE PFML", agency:"Delaware Dept. of Labor",                     taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:false, portal:false, amend:false, exchange:false},
   {name:"DC SIT",  agency:"D.C. Treasurer / Office of Tax and Revenue",  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"DC SUI/PFL", agency:"DC Dept. of Employment Services",          taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"FL SUI",  agency:"Florida Department of Revenue",               taxType:"SUI",          authProcess:"Gusto self-serve+ INFO", pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
@@ -1121,19 +1122,19 @@ const authData = [
   {name:"IN SUI",  agency:"Indiana Dept. of Workforce Development",      taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"IA SIT",  agency:"Iowa Department of Revenue",                  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"IA SUI",  agency:"Iowa Workforce Development",                  taxType:"SUI",          authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:true},
-  {name:"KS SIT",  agency:"Kansas Department of Revenue",                taxType:"SIT",          authProcess:"Other (see notes)",      pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"KS SIT",  agency:"Kansas Department of Revenue",                taxType:"SIT",          authProcess:"Other",      pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"KS SUI",  agency:"Kansas Dept. of Labor",                       taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:false, portal:true,  amend:false, exchange:true},
-  {name:"KY SIT",  agency:"Kentucky Department of Revenue",              taxType:"SIT",          authProcess:"Other (see notes)",      pay:false, file:false, phone:false, portal:true,  amend:true,  exchange:false},
+  {name:"KY SIT",  agency:"Kentucky Department of Revenue",              taxType:"SIT",          authProcess:"Other",      pay:false, file:false, phone:false, portal:true,  amend:true,  exchange:false},
   {name:"KY SUI",  agency:"Kentucky Office of Unemployment Insurance",   taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
   {name:"KY Kenton County", agency:"Kenton County Occupational Tax",      taxType:"Local",        authProcess:"",                       pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
   {name:"KY Campbell County", agency:"Campbell County Fiscal Court",      taxType:"Local",        authProcess:"",                       pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
   {name:"KY City of Middletown", agency:"City of Middletown",             taxType:"Local",        authProcess:"",                       pay:false, file:false, phone:false, portal:false, amend:false, exchange:false},
-  {name:"LA SIT",  agency:"Louisiana Department of Revenue",             taxType:"SIT",          authProcess:"Other (see notes)",      pay:false, file:false, phone:false, portal:true,  amend:true,  exchange:false},
+  {name:"LA SIT",  agency:"Louisiana Department of Revenue",             taxType:"SIT",          authProcess:"Other",      pay:false, file:false, phone:false, portal:true,  amend:true,  exchange:false},
   {name:"LA SUI",  agency:"Louisiana Workforce Commission",              taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
   {name:"ME SIT",  agency:"Maine Revenue Services",                      taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"ME SUI",  agency:"Maine Department of Labor",                   taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"MD SIT",  agency:"Maryland Comptroller of Maryland",            taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
-  {name:"MD SUI",  agency:"Maryland UI Fund / Dept. of Labor",           taxType:"SUI",          authProcess:"POA-only",               pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"MD SUI",  agency:"Maryland UI Fund / Dept. of Labor",           taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"MA SIT",  agency:"Commonwealth of Massachusetts / DOR",         taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"MA PFML", agency:"Massachusetts Dept. of Revenue (PFML)",       taxType:"PFML",         authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"MA SUI",  agency:"MA Division of Unemployment Assistance",      taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
@@ -1163,7 +1164,7 @@ const authData = [
   {name:"NC SIT",  agency:"North Carolina Department of Revenue",        taxType:"SIT",          authProcess:"POA-only",               pay:true,  file:true,  phone:true,  portal:true,  amend:false, exchange:false},
   {name:"NC SUI",  agency:"NC Division of Employment Security",          taxType:"SUI",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
   {name:"ND SIT",  agency:"North Dakota Office of State Tax Commissioner",taxType:"SIT",         authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
-  {name:"ND SUI",  agency:"Job Service North Dakota",                    taxType:"SUI",          authProcess:"Other (see notes)",      pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
+  {name:"ND SUI",  agency:"Job Service North Dakota",                    taxType:"SUI",          authProcess:"Other",      pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"OH SIT",  agency:"Ohio Dept. of Taxation",                      taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:false, portal:true,  amend:false, exchange:false},
   {name:"OH SUI",  agency:"Ohio Dept. of Job and Family Services",       taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
   {name:"OK SIT",  agency:"Oklahoma Tax Commission",                     taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
@@ -1487,6 +1488,7 @@ renderPoaTable();
 // To add entries: add an object to the TOP of this array (most recent first).
 // Types: "data" | "feature" | "fix" | "structure"
 const changelogData = [
+  {date:"2026-07-10", type:"data",      desc:"Authorization table: Added DE PFML (Delaware Dept. of Labor, PFML, Pay and File checked). MD SUI: Pay and File unchecked.", agencies:"DE PFML, MD SUI"},
   {date:"2026-05-28", type:"data",      desc:"ME SIT POA: Form set to 2848 ME POA, Signature set to WET, Use notes added (required for specific account discussions; typed/fancy font not accepted).", agencies:"ME SIT"},
   {date:"2026-05-28", type:"data",      desc:"Turnaround (2026) updated for 5 agencies using Q1+Q2 averages: DC SUI/PFL (2.5d), IL SUI (2d), IN SUI (0.5d), VA SIT (6.5d), WI SUI (9.5d).", agencies:"DC SUI/PFL, IL SUI, IN SUI, VA SIT, WI SUI"},
   {date:"2026-05-28", type:"data",      desc:"MI SIT POA: In-App updated to Yes. PA SUI: exchange method corrected from Direct Download to Pickup-Dropoff. TN SUI: exchange method corrected from Direct Download to Email Exchange. IN SIT: Exchange updated to Yes, method set to Pickup-Dropoff.", agencies:"MI SIT, PA SUI, TN SUI, IN SIT"},
@@ -1508,10 +1510,19 @@ const changelogData = [
 const clTypeLabels = {data:"Data update", feature:"New feature", fix:"Fix", structure:"Structure"};
 const clTypeCss    = {data:"cl-data",     feature:"cl-feature",  fix:"cl-fix", structure:"cl-structure"};
 
+const CL_PAGE_SIZE = 10;
+let clCurrentPage = 0;
+
 function renderChangelog(){
   const el = document.getElementById('changelogList');
   if(!changelogData.length){ el.innerHTML='<p style="font-size:12px;color:var(--text-muted);">No entries yet.</p>'; return; }
-  el.innerHTML = changelogData.map(e => {
+
+  const totalPages = Math.ceil(changelogData.length / CL_PAGE_SIZE);
+  clCurrentPage = Math.min(clCurrentPage, totalPages - 1);
+  const start = clCurrentPage * CL_PAGE_SIZE;
+  const page  = changelogData.slice(start, start + CL_PAGE_SIZE);
+
+  const entries = page.map(e => {
     const d = e.date ? new Date(e.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
     return `<div class="cl-entry">
       <div class="cl-date">${d}</div>
@@ -1522,6 +1533,21 @@ function renderChangelog(){
       </div>
     </div>`;
   }).join('');
+
+  const pagination = totalPages > 1 ? `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+      <button onclick="clChangePage(-1)" ${clCurrentPage===0?'disabled':''} style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-size:12px;font-weight:600;cursor:pointer;color:${clCurrentPage===0?'#d1d5db':'var(--text)'};transition:all .15s;" onmouseover="if(${clCurrentPage>0})this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">← Newer</button>
+      <span style="font-size:12px;color:var(--text-muted);">Page ${clCurrentPage+1} of ${totalPages} &nbsp;·&nbsp; ${changelogData.length} total entries</span>
+      <button onclick="clChangePage(1)" ${clCurrentPage===totalPages-1?'disabled':''} style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-size:12px;font-weight:600;cursor:pointer;color:${clCurrentPage===totalPages-1?'#d1d5db':'var(--text)'};transition:all .15s;" onmouseover="if(${clCurrentPage<totalPages-1})this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">Older →</button>
+    </div>` : '';
+
+  el.innerHTML = entries + pagination;
+}
+
+function clChangePage(dir){
+  const totalPages = Math.ceil(changelogData.length / CL_PAGE_SIZE);
+  clCurrentPage = Math.max(0, Math.min(clCurrentPage + dir, totalPages - 1));
+  renderChangelog();
 }
 
 function addChangelogEntry(){
