@@ -223,8 +223,8 @@
   <div style="background:#fefce8;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:10px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px;">
     <span style="font-size:18px;flex-shrink:0;margin-top:1px;">🚧</span>
     <div>
-      <p style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:4px;">This dashboard is a work in progress and is currently under peer review.</p>
-      <p style="font-size:12px;color:#a16207;line-height:1.6;">Data will be iterated on and improved over time — some fields may be incomplete or subject to change. If you spot anything incorrect or out of date, your feedback is appreciated! Use the <a href="#anchor-corrections" style="color:#92400e;font-weight:700;text-decoration:underline;text-underline-offset:2px;">Correction Request form</a> at the bottom of the page to flag anything that needs a second look.</p>
+      <p style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:4px;">This page is being moved and updated with corrections — a new link will be coming soon.</p>
+      <p style="font-size:12px;color:#a16207;line-height:1.6;">Data is actively being revised and improved. Some fields may be incomplete or subject to change in the meantime.</p>
     </div>
   </div>
 
@@ -387,7 +387,7 @@
       <p style="font-size:12px;color:#a16207;line-height:1.6;">Data in this section is being reviewed for accuracy and completeness. It will be made available once the audit is complete.</p>
     </div>
   </div>
-  <div class="table-card" style="display:none;">
+  <div class="table-card">
     <div class="table-header">
       <h3>POA Requirements <button class="collapse-btn" onclick="toggleTable(this,'poaTableWrap')">▲ Collapse</button></h3>
       <input class="search-input" placeholder="Search agencies…" oninput="searchPoaTable(this.value)">
@@ -663,6 +663,7 @@ const agencies = [
   // DELAWARE
   {name:"DE SIT", sysCode:"DE - DOR", agency:"Delaware Division of Revenue", desc:"Delaware - Employee Withholding", taxType:"SIT", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   {name:"DE SUI", sysCode:"DE - DOL", agency:"Delaware Department of Labor", desc:"Delaware - Employer Unemployment", taxType:"SUI", portal:"NO", exchange:"NO", authProcess:"POA-only", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
+  {name:"DE PFML", sysCode:"", agency:"Delaware Dept. of Labor", desc:"Delaware - Paid Family and Medical Leave", taxType:"PFML", portal:"YES", exchange:"NO", authProcess:"Customer self-serve", exchangeMethod:"", rateExch:false, einExch:false, dsExch:false, complexity:null},
   // FLORIDA
   {name:"FL SUI", sysCode:"FL - DOR", agency:"Florida Department of Revenue", desc:"Florida - Employer Unemployment", taxType:"SUI", portal:"YES", exchange:"YES", authProcess:"Gusto self-serve+ INFO", exchangeMethod:"Direct download", rateExch:true, einExch:false, dsExch:false, complexity:3},
   // GEORGIA
@@ -1092,7 +1093,7 @@ const authData = [
   {name:"AL SIT",  agency:"Alabama Department of Revenue",               taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
   {name:"AL SUI",  agency:"Alabama Department of Labor",                 taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"AK SUI",  agency:"Alaska Dept. of Labor & Workforce Dev.",      taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
-  {name:"AZ SIT",  agency:"Arizona Withholding / Dept. of Revenue",      taxType:"SIT",          authProcess:"Joint effort",           pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"AZ SIT",  agency:"Arizona Withholding / Dept. of Revenue",      taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"AZ SUI",  agency:"Arizona Dept. of Economic Security",          taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
   {name:"AR SIT",  agency:"Dept. of Finance and Administration",         taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"AR SUI",  agency:"Arkansas Dept. of Workforce Services",        taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:true},
@@ -1106,8 +1107,8 @@ const authData = [
   {name:"CT PFML", agency:"Connecticut Paid Leave Authority",            taxType:"PFML",         authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"DE SIT",  agency:"Delaware Division of Revenue",                taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"DE SUI",  agency:"Delaware Dept. of Labor",                     taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
-  {name:"DE PFML", agency:"Delaware Dept. of Labor",                     taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:false, portal:false, amend:false, exchange:false},
-  {name:"DC SIT",  agency:"D.C. Treasurer / Office of Tax and Revenue",  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
+  {name:"DE PFML", agency:"Delaware Dept. of Labor",                     taxType:"PFML",         authProcess:"Customer self-serve",    pay:true,  file:true,  phone:false, portal:true,  amend:true,  exchange:false},
+  {name:"DC SIT",  agency:"D.C. Treasurer / Office of Tax and Revenue",  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"DC SUI/PFL", agency:"DC Dept. of Employment Services",          taxType:"SUI",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"FL SUI",  agency:"Florida Department of Revenue",               taxType:"SUI",          authProcess:"Gusto self-serve+ INFO", pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"GA SIT",  agency:"Georgia Department of Revenue",               taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
@@ -1116,7 +1117,7 @@ const authData = [
   {name:"HI SIT",  agency:"Hawaii Department of Taxation",               taxType:"SIT",          authProcess:"Gusto self-serve+ INFO", pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"ID SIT",  agency:"Idaho State Tax Commission",                  taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"ID SUI",  agency:"Idaho Dept. of Labor",                        taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
-  {name:"IL SIT",  agency:"Illinois Withholding / Dept. of Revenue",     taxType:"SIT",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
+  {name:"IL SIT",  agency:"Illinois Withholding / Dept. of Revenue",     taxType:"SIT",          authProcess:"Customer self-serve",    pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"IL SUI",  agency:"Illinois Unemployment / IDES",                taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"IN SIT",  agency:"Indiana Department of Revenue",               taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
   {name:"IN SUI",  agency:"Indiana Dept. of Workforce Development",      taxType:"SUI",          authProcess:"Customer self-serve",    pay:true,  file:true,  phone:true,  portal:true,  amend:true,  exchange:true},
@@ -1153,7 +1154,7 @@ const authData = [
   {name:"NE SUI",  agency:"Nebraska Department of Labor",                taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:false, amend:false, exchange:true},
   {name:"NV SUI",  agency:"Nevada Employment Security Division",         taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:true},
   {name:"NV MBT",  agency:"Nevada Department of Taxation",               taxType:"MBT",          authProcess:"POA-only",               pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
-  {name:"NH SUI",  agency:"New Hampshire Employment Security",           taxType:"SUI",          authProcess:"Gusto self-serve",       pay:true,  file:true,  phone:true,  portal:false, amend:false, exchange:false},
+  {name:"NH SUI",  agency:"New Hampshire Employment Security",           taxType:"SUI",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
   {name:"NJ SUI",  agency:"NJ Dept. of Labor and Workforce Dev.",        taxType:"SUI",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:true,  amend:false, exchange:false},
   {name:"NJ SIT",  agency:"New Jersey Division of Taxation",             taxType:"SIT",          authProcess:"Joint effort",           pay:false, file:false, phone:true,  portal:false, amend:false, exchange:false},
   {name:"NM SIT",  agency:"New Mexico Taxation & Revenue Dept.",         taxType:"SIT",          authProcess:"Gusto self-serve",       pay:false, file:false, phone:true,  portal:true,  amend:true,  exchange:false},
@@ -1319,7 +1320,7 @@ const poaData = [
   {name:"GA SIT", sysCode:"13-000-0000-SIT-000", desc:"Georgia - Employee Withholding", form:"RD-1063 Reporting Agent Authorization", sig:"NOT SPECIFIED", trans:"ELEC/EMAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
   {name:"GA SUI", sysCode:"13-000-0000-ER_SUTA-000", desc:"Georgia - Employer Unemployment", form:"GA Power of Attorney", sig:"WET SIG", trans:"FAX", notary:true, mou:false, inapp:false, use:"", agencyCall:true},
   {name:"HI SUI", sysCode:"15-000-0000-ER_SUTA-000", desc:"Hawaii - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
-  {name:"HI SIT", sysCode:"15-000-0000-SIT-000", desc:"Hawaii - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
+  {name:"HI SIT", sysCode:"15-000-0000-SIT-000", desc:"Hawaii - Employee Withholding", form:"POA N-848", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
   {name:"ID SIT", sysCode:"16-000-0000-SIT-000", desc:"Idaho - Employee Withholding", form:"Form ID-POA Power of Attorney", sig:"NOT SPECIFIED", trans:"FAX/MAIL", notary:false, mou:false, inapp:false, use:"", agencyCall:true, accepts8655:true},
   {name:"ID SUI", sysCode:"16-000-0000-ER_SUTA-000", desc:"Idaho - Employer Unemployment", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:"", accepts8655:true},
   {name:"IL SIT", sysCode:"17-000-0000-SIT-000", desc:"Illinois - Employee Withholding", form:"IL-8655 Reporting Agent Authorization", sig:"EITHER", trans:"", notary:false, mou:false, inapp:true, use:"", agencyCall:true},
@@ -1338,7 +1339,7 @@ const poaData = [
   {name:"ME SUI", sysCode:"23-000-0000-ER_SUTA-000", desc:"Maine - Employer Unemployment", form:"", sig:"", trans:"EMAIL", notary:false, mou:false, inapp:false, use:"", accepts8655:true},
   {name:"MD SIT", sysCode:"24-000-0000-SIT-000", desc:"Maryland - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:true, use:""},
   {name:"MD SUI", sysCode:"24-000-0000-ER_SUTA-000", desc:"Maryland - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:true, use:""},
-  {name:"MA SIT", sysCode:"25-000-0000-SIT-000", desc:"Massachusetts - Employee Withholding", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:""},
+  {name:"MA SIT", sysCode:"25-000-0000-SIT-000", desc:"Massachusetts - Employee Withholding", form:"Form M-2848", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:"", agencyCall:true},
   {name:"MA PFML", sysCode:"25-000-0000-FLI-000", desc:"Massachusetts - Paid Family and Medical Leave", form:"", sig:"", trans:"FAX", notary:false, mou:false, inapp:false, use:""},
   {name:"MA SUI", sysCode:"25-000-0000-ER_SUTA-000", desc:"Massachusetts - Employer Unemployment", form:"", sig:"", trans:"", notary:false, mou:false, inapp:false, use:""},
   {name:"MI SIT", sysCode:"26-000-0000-SIT-000", desc:"Michigan - Employee Withholding", form:"", sig:"", trans:"", notary:false, mou:false, inapp:true, use:""},
@@ -1488,6 +1489,8 @@ renderPoaTable();
 // To add entries: add an object to the TOP of this array (most recent first).
 // Types: "data" | "feature" | "fix" | "structure"
 const changelogData = [
+  {date:"2026-07-14", type:"data",      desc:"POA table: HI SIT form set to POA N-848. MA SIT form set to Form M-2848, Agency Call marked true.", agencies:"HI SIT, MA SIT"},
+  {date:"2026-07-14", type:"data",      desc:"Authorization table: DE PFML portal and amend updated to true. DC SIT exchange updated to true. AZ SIT pay and file updated to false. NH SUI pay and file updated to false. Exchanges table: DE PFML added with portal YES.", agencies:"DE PFML, DC SIT, AZ SIT, NH SUI"},
   {date:"2026-07-10", type:"data",      desc:"Authorization table: Added DE PFML (Delaware Dept. of Labor, PFML, Pay and File checked). MD SUI: Pay and File unchecked.", agencies:"DE PFML, MD SUI"},
   {date:"2026-05-28", type:"data",      desc:"ME SIT POA: Form set to 2848 ME POA, Signature set to WET, Use notes added (required for specific account discussions; typed/fancy font not accepted).", agencies:"ME SIT"},
   {date:"2026-05-28", type:"data",      desc:"Turnaround (2026) updated for 5 agencies using Q1+Q2 averages: DC SUI/PFL (2.5d), IL SUI (2d), IN SUI (0.5d), VA SIT (6.5d), WI SUI (9.5d).", agencies:"DC SUI/PFL, IL SUI, IN SUI, VA SIT, WI SUI"},
